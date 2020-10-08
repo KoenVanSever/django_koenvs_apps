@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf8">
+        <title>{{ question.question_text }}</title>
+    </head>
+    <body>
+        <h1>{{ question.question_text }}</h1>
+
+        {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+        <form action="{% url 'app02:vote' question.id %}" method="post">
+        {% csrf_token %} <!-- To prevent Cross Site Request Forgeries -->
+        {% for x in question.choice_set.all %}
+        <label><input type="radio" name="choice" id="choice{{ forloop.counter }}" value="{{ x.id }}">{{ x.choice_text }}<br></label>
+        <!-- forloop.counter handy to keep track of number of times forloop has iterated! -->
+        {% endfor %}
+        <input type="submit" value="Vote">
+        </form>
+        
+    </body>
+</html>

@@ -32,6 +32,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [ # all apps that are activated in this django instance
     'app01.apps.App01Config', # added from app01 directory, file apps.py, class App01Config
+    'app02.apps.App02Config',
     'django.contrib.admin', # admin site
     'django.contrib.auth', # authentication system
     'django.contrib.contenttypes', 

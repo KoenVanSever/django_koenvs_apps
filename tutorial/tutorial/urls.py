@@ -19,6 +19,7 @@ from django.urls import path, include
 urlpatterns = [
     path('app01/', include('app01.urls')), # include allows referencing to other urls.py files (in other apps except your root app)
     # this always for easy plug and play behavior (let's say app01 has a few 100 views, you can just store in urls of app01 and include that in your site)
+    path('app02/', include('app02.urls')), # app02 is an updated version of app01 with cleaner code
     path('admin/', admin.site.urls),
     # path is passed 4 arguments: 
     # 1. route: string that contains URL pattern (does not include domain name so for "koenvs.com/myapp", you only need to give up "myapp/")
