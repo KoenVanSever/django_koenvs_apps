@@ -3,6 +3,9 @@
     <head>
         <meta charset="utf8">
         <title>{{ question.question_text }}</title>
+        {% load static %}
+        <link type="text/css" rel="stylesheet" href="{% static 'app02/styles.css' %}">
+        <link rel="shortcut icon" href="{% static 'app02/favicon.ico' %}">
     </head>
     <body>
         <h1>{{ question.question_text }}</h1>
@@ -16,6 +19,5 @@
         {% endfor %}
         <input type="submit" value="Vote">
         </form>
-        
     </body>
 </html>

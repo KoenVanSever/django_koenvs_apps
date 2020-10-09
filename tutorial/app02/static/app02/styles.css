@@ -1,0 +1,7 @@
+li a {
+    color: #abd54e;
+}
+
+li a:hover {
+    color: yellow;
+}

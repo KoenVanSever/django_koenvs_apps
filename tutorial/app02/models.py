@@ -1,4 +1,6 @@
 from django.db import models
+from django.utils import timezone
+import datetime
 
 # Create your models here.
 # Models are used to interact with databases in Django
@@ -9,12 +11,14 @@ class Question(models.Model):
     pub_date = models.DateTimeField('date published') # first argument (if filled in) is to make code more human readable
 
     def __str__(self): # since you will be handling value as objects, you want a __str__ to represent at a human readable format
-        return """
-        {} asked on {}
-        """.format(self.question_text, self.pub_date)
+        return """{}""".format(self.question_text)
 
     def was_published_recently(self):
-        return self.pub_date >= timezone.now() - datetime.timedelta(days=1)
+        now = timezone.now()
+        return ( now >= self.pub_date >= now - datetime.timedelta(days=1)) # returns boolean value True if questions was published less than a day ago
+
+    def create_question(question_text, time):
+        Question(question_text = question_text, pub_date = time).save()
 
 class Choice(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE) # take a foreign key (single use) out of Question class/table (One Choice can only relate to one Question)

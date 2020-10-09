@@ -3,6 +3,7 @@ from django.http import HttpResponse, Http404, HttpResponseRedirect
 from django.template import loader
 from django.urls import reverse
 from django.views import generic # easier for templating, contains generic views that can be altered
+from django.utils import timezone
 from .models import Question, Choice
 
 
@@ -11,13 +12,21 @@ class IndexView(generic.ListView): # subclassed from ListView
     context_object_name = 'latest_question_list'
 
     def get_queryset(self):
-        """Return the last five published questions."""
-        return Question.objects.order_by('-pub_date')[:5]
+        # """Return the last five published questions."""
+        # return Question.objects.order_by('-pub_date')[:5]
+        """ We need to return only objects Less or Equal Than (lte) datetime.now() """
+        return (Question.objects.filter(pub_date__lte=timezone.now()).order_by("-pub_date")[:5])
 
 class DetailView(generic.DetailView): # subclassed from DetailView
     # The DetailView generic view expects the primary key value captured from the URL to be called "pk", so we’ve changed question_id to pk for the generic views (urls.py)
     model = Question
     template_name = 'app02/detail.html' # overwrites default naming of the page
+
+    def get_queryset(self):
+        """
+        Excludes any questions that aren't published yet.
+        """
+        return Question.objects.filter(pub_date__lte = timezone.now()) 
 
 
 class ResultsView(generic.DetailView): # subclassed from DetailView

@@ -3,6 +3,9 @@
     <head>
         <meta charset="utf8">
         <title>Questions list</title>
+        {% load static %}
+        <link type="text/css" rel="stylesheet" href="{% static 'app02/styles.css' %}">
+        <link rel="shortcut icon" href="{% static 'app02/favicon.ico' %}">
     </head>
     <body>
         {% if latest_question_list %} <!-- Kinda like Jinja2 but it's Django's own template engine -->

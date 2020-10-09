@@ -11,3 +11,4 @@ tutorial/__pycache__
 tutorial/tutorial/__pycache__
 tutorial/app02/__pycache__
 tutorial/app02/migrations/__pycache__
+*/__pycache__
