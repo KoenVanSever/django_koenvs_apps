@@ -6,9 +6,5 @@
 /pyvenv.cfg
 /django
 tutorial/app01/__pycache__
-tutorial/app01/migrations/__pycache__
-tutorial/__pycache__
-tutorial/tutorial/__pycache__
-tutorial/app02/__pycache__
-tutorial/app02/migrations/__pycache__
 */__pycache__
+*/*/__pycache__

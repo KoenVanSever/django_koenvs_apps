@@ -4,4 +4,4 @@ from django.http import HttpResponse
 
 # Create your views here.
 def serialIndex(request):
-    return HttpResponse("Test")
+    return render(request, "serial:index")
