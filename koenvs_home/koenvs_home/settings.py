@@ -32,7 +32,9 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'serial.apps.SerialConfig',
+    'apps.serial.apps.SerialConfig',
+    'apps.dimming.apps.DimmingConfig',
+    'apps.magnetics.apps.MagneticsConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -62,8 +64,9 @@ TEMPLATES = [
     # },
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
-        'APP_DIRS': True,
+        # /i if you want to work from root
+        'DIRS': [os.path.join(BASE_DIR, 'templates/'), ],
+        'APP_DIRS': True,  # /i enables searching in apps dirs
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
@@ -125,4 +128,23 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
+
+# /i where does root directory start
+STATIC_ROOT = os.path.join(BASE_DIR, '/static/')
+# /i static url
 STATIC_URL = '/static/'
+# /i run 'python manage.py collectstatic' to pull all static files to this directory
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+]
+
+# STATICFILES_FINDERS = (
+#     'django.contrib.staticfiles.finders.FileSystemFinder',
+#     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+# ) # /i where to look for static files
+
+# Media Files
+# /i where does root directory start
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+# /i media url
+MEDIA_URL = '/media/'

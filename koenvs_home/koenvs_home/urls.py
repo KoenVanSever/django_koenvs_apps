@@ -19,6 +19,8 @@ from . import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('serial/', include('serial.urls')),
+    path('serial/', include('apps.serial.urls')),
+    path('dimming/', include('apps.dimming.urls')),
+    path('magnetics/', include('apps.magnetics.urls')),
     path('', views.homeIndex),
 ]

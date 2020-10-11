@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>KoenVS - Serial</title>
+{% endblock %}
+
+{% block header %}
+<div id="header_title_container">
+    <h1>Serial Interface</h1>
+</div>
+{% endblock %}
+
+{% block main %}
+<div id="main_form" class="main_div">
+    <form method="post" action="/">
+        <div id="comm_butt_div">
+            <input class="ser_button gen" type="submit" name="ser_button" value="open">
+            <input class="ser_button gen" type="submit" name="ser_button" value="exit">
+            <input class="ser_button gen" type="submit" name="ser_button" value="getver">
+            <input class="ser_button gen" type="submit" name="ser_button" value="clear">
+            <input class="ser_button gen" type="submit" name="ser_button" value="help">
+            <input class="ser_button gen" type="submit" name="ser_button" value="readvolt">
+            <input class="ser_button ccr" type="submit" name="ser_button" value="calibccrlo 2000">
+            <input class="ser_button ccr" type="submit" name="ser_button" value="calibccrhi 6600">
+            <input class="ser_button ccr" type="submit" name="ser_button" value="calibccrsave yes">
+            <input class="ser_button ccr" type="submit" name="ser_button" value="getccr">
+            <input class="ser_button ccr" type="submit" name="ser_button" value="getcalib">
+            <input class="ser_button led" type="submit" name="ser_button" value="ledinfo ARG1 ARG2">
+            <input class="ser_button led" type="submit" name="ser_button" value="ledcalib ARG1">
+            <input class="ser_button led" type="submit" name="ser_button" value="getledcalib ARG1">
+            <input class="ser_button led" type="submit" name="ser_button" value="ledinactivate ARG1">
+            <input class="ser_button led" type="submit" name="ser_button" value="getledstatus ARG1">
+            <input class="ser_button led" type="submit" name="ser_button" value="setledovr ARG1 ARG2">
+            <input class="ser_button led" type="submit" name="ser_button" value="setledovr2 ARG1 ARG2">
+            <input class="ser_button asp" type="submit" name="ser_button" value="rx ARG1 ARG2">
+            <input class="ser_button asp" type="submit" name="ser_button" value="asp on">
+            <input class="ser_button asp" type="submit" name="ser_button" value="asp off">
+            <input class="ser_button asp" type="submit" name="ser_button" value="setTXpower ARG1">
+            <input class="ser_button asp" type="submit" name="ser_button" value="params dump">
+            <input class="ser_button asp" type="submit" name="ser_button" value="recvtest">
+            <div id="manual_input">
+                <label>Command + buffer time (s):
+                    <input class="ser_entry" type="text" id="manent" name="manent" placeholder="put a command here">
+                    <input class="ser_entry" type="text" id="buftime" size="2" name="buftime" value="0.1">
+                    <input class="ser_button man" type="submit" name="ser_button" value="run manual input">
+                </label>
+            </div>
+        </div>
+        <div class="args_row">
+            <div class="args_col" id="args_left">
+                <label class="arg_lab">ARG 1: <input class="entry bla" size="2" type="text" name="term_entry_arg1"
+                        value=""></label> <!-- For attribute in label not needed because implicit-->
+                &nbsp;
+                <label class="arg_lab">ARG 2: <input class="entry bla" size="2" type="text" name="term_entry_arg2"
+                        value=""></label>
+            </div>
+            <div class="args_col" id="args_mid">
+                <label class="args_lab">Available ports:
+                    <select name="ports" id="port-select">
+                        <!-- {% for port in ser_ports %}
+                        <option value=""></option>
+                        {% endfor %} -->
+                    </select>
+                </label>
+            </div>
+            <div class="args_col" , id="args_right">
+                Converter type:
+                <label class="args_lab"><input class="radio_conv" type="radio" name="conv_type" value="HPC">HPC</label>
+                <label class="args_lab"><input class="radio_conv" type="radio" name="conv_type"
+                        value="FO/LCC">FO/LCC</label>
+            </div>
+        </div>
+    </form>
+</div>
+<pre id="term">
+{% for line in terminal %}
+{{ line }}
+{% endfor %}
+</pre>
+{% endblock%}
+
+{% block footer %}
+
+{% endblock%}

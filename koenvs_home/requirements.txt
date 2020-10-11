@@ -1,0 +1,6 @@
+matplotlib
+django
+pandas
+pyserial
+pylint
+autopep8

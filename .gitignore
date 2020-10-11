@@ -1,10 +1,4 @@
-/lib
-/bin
-/include
-/share
-/lib64
-/pyvenv.cfg
-/django
-tutorial/app01/__pycache__
-*/__pycache__
-*/*/__pycache__
+**__pycache__/
+**/__pycache__/
+djangoenv/
+*.pyc
