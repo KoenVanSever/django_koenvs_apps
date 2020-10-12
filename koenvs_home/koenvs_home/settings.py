@@ -133,7 +133,7 @@ USE_TZ = True
 STATIC_ROOT = os.path.join(BASE_DIR, '/static/')
 # /i static url
 STATIC_URL = '/static/'
-# /i run 'python manage.py collectstatic' to pull all static files to this directory
+# /i run 'python manage.py collectstatic' to pull all static files to this directory (where are statics stored)
 STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
@@ -146,5 +146,5 @@ STATICFILES_DIRS = [
 # Media Files
 # /i where does root directory start
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-# /i media url
+# /i media url: where are media stored
 MEDIA_URL = '/media/'

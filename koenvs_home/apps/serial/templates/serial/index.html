@@ -2,6 +2,12 @@
 
 {% block head %}
 <title>KoenVS - Serial</title>
+<script defer>
+    let ent = JSON.parse("{{ entry_data | escapejs }}");
+    console.log(ent);
+</script>
+{% load static %}
+<script type="text/javascript" src="{% static 'js/serial.js' %}" defer></script>
 {% endblock %}
 
 {% block header %}
@@ -48,18 +54,21 @@
         </div>
         <div class="args_row">
             <div class="args_col" id="args_left">
-                <label class="arg_lab">ARG 1: <input class="entry bla" size="2" type="text" name="term_entry_arg1"
-                        value=""></label> <!-- For attribute in label not needed because implicit-->
+                <label class="arg_lab">ARG 1: <input class="entry" id="entry_arg1" size="2" type="text"
+                        name="term_entry_arg1" value=""></label>
+                <!-- For attribute in label not needed because implicit-->
                 &nbsp;
-                <label class="arg_lab">ARG 2: <input class="entry bla" size="2" type="text" name="term_entry_arg2"
-                        value=""></label>
+                <label class="arg_lab">ARG 2: <input class="entry" id="entry_arg2" size="2" type="text"
+                        name="term_entry_arg2" value=""></label>
             </div>
             <div class="args_col" id="args_mid">
                 <label class="args_lab">Available ports:
                     <select name="ports" id="port-select">
-                        <!-- {% for port in ser_ports %}
-                        <option value=""></option>
-                        {% endfor %} -->
+                        <option class="conv_list" value=""></option>
+                        {% for port in ser_ports %}
+                        <script>console.log("{{ port }}")</script>
+                        <option class="conv_list" value="{{ port }}">{{ port }}</option>
+                        {% endfor %}
                     </select>
                 </label>
             </div>
@@ -68,9 +77,11 @@
                 <label class="args_lab"><input class="radio_conv" type="radio" name="conv_type" value="HPC">HPC</label>
                 <label class="args_lab"><input class="radio_conv" type="radio" name="conv_type"
                         value="FO/LCC">FO/LCC</label>
+
             </div>
         </div>
     </form>
+    <button onclick="updateEntryData(ent);">test</button>
 </div>
 <pre id="term">
 {% for line in terminal %}
