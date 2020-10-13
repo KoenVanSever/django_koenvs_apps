@@ -17,79 +17,82 @@
 {% endblock %}
 
 {% block main %}
-<div id="main_form" class="main_div">
-    <form method="post" action="/">
-        <div id="comm_butt_div">
-            <input class="ser_button gen" type="submit" name="ser_button" value="open">
-            <input class="ser_button gen" type="submit" name="ser_button" value="exit">
-            <input class="ser_button gen" type="submit" name="ser_button" value="getver">
-            <input class="ser_button gen" type="submit" name="ser_button" value="clear">
-            <input class="ser_button gen" type="submit" name="ser_button" value="help">
-            <input class="ser_button gen" type="submit" name="ser_button" value="readvolt">
-            <input class="ser_button ccr" type="submit" name="ser_button" value="calibccrlo 2000">
-            <input class="ser_button ccr" type="submit" name="ser_button" value="calibccrhi 6600">
-            <input class="ser_button ccr" type="submit" name="ser_button" value="calibccrsave yes">
-            <input class="ser_button ccr" type="submit" name="ser_button" value="getccr">
-            <input class="ser_button ccr" type="submit" name="ser_button" value="getcalib">
-            <input class="ser_button led" type="submit" name="ser_button" value="ledinfo ARG1 ARG2">
-            <input class="ser_button led" type="submit" name="ser_button" value="ledcalib ARG1">
-            <input class="ser_button led" type="submit" name="ser_button" value="getledcalib ARG1">
-            <input class="ser_button led" type="submit" name="ser_button" value="ledinactivate ARG1">
-            <input class="ser_button led" type="submit" name="ser_button" value="getledstatus ARG1">
-            <input class="ser_button led" type="submit" name="ser_button" value="setledovr ARG1 ARG2">
-            <input class="ser_button led" type="submit" name="ser_button" value="setledovr2 ARG1 ARG2">
-            <input class="ser_button asp" type="submit" name="ser_button" value="rx ARG1 ARG2">
-            <input class="ser_button asp" type="submit" name="ser_button" value="asp on">
-            <input class="ser_button asp" type="submit" name="ser_button" value="asp off">
-            <input class="ser_button asp" type="submit" name="ser_button" value="setTXpower ARG1">
-            <input class="ser_button asp" type="submit" name="ser_button" value="params dump">
-            <input class="ser_button asp" type="submit" name="ser_button" value="recvtest">
-            <div id="manual_input">
-                <label>Command + buffer time (s):
-                    <input class="ser_entry" type="text" id="manent" name="manent" placeholder="put a command here">
-                    <input class="ser_entry" type="text" id="buftime" size="2" name="buftime" value="0.1">
-                    <input class="ser_button man" type="submit" name="ser_button" value="run manual input">
-                </label>
-            </div>
+<div id="main_buttons" class="main_div">
+    <!-- <form method="post" action="/"> -->
+    <div id="comm_butt_div">
+        <button class="ser_button gen" onclick='sendData("open");'>open terminal</button>
+        <button class="ser_button gen" onclick='sendData("exit")'>exit</button>
+        <button class="ser_button gen" onclick='sendData("getver")'>get version</button>
+        <button class="ser_button gen" onclick='sendData("clear")'>clear terminal</button>
+        <button class="ser_button gen" onclick='sendData("help")'>show help</button>
+        <button class="ser_button gen" onclick='sendData("readvolt")'>readvolt</button>
+        <button class="ser_button ccr" onclick='sendData("calibccrlo 2000")'>calibccrlo 2000</button>
+        <button class="ser_button ccr" onclick='sendData("calibccrhi 6600")'>calibcrrhi 6600</button>
+        <button class="ser_button ccr" onclick='sendData("calibccrsave yes")'>calibccrsave yes</button>
+        <button class="ser_button ccr" onclick='sendData("getccr")'>getccr</button>
+        <button class="ser_button ccr" onclick='sendData("getcalib")'>getcalib</button>
+        <button class="ser_button led" onclick='sendData("ledinfo ARG1 ARG2")'>ledinfo ARG1 ARG2</button>
+        <button class="ser_button led" onclick='sendData("ledcalib ARG1")'>ledcalib ARG1</button>
+        <button class="ser_button led" onclick='sendData("getledcalib ARG1")'>getledcalib ARG1</button>
+        <button class="ser_button led" onclick='sendData("ledinactivate ARG1")'>ledinactivate ARG1</button>
+        <button class="ser_button led" onclick='sendData("getledstatus ARG1")'>getledstatus ARG1</button>
+        <button class="ser_button led" onclick='sendData("setledovr ARG1 ARG2")'>setledovr ARG1 ARG2</button>
+        <button class="ser_button led" onclick='sendData("setledovr2 ARG1 ARG2")'>setledovr2 ARG1 ARG2</button>
+        <button class="ser_button asp" onclick='sendData("rx ARG1 ARG2")'>rx ARG1 ARG2</button>
+        <button class="ser_button asp" onclick='sendData("asp on")'>asp on</button>
+        <button class="ser_button asp" onclick='sendData("asp off")'>asp off</button>
+        <button class="ser_button asp" onclick='sendData("setTXpower ARG1")'>setTXpower ARG1</button>
+        <button class="ser_button asp" onclick='sendData("params dump")'>params dump</button>
+        <button class="ser_button asp" onclick='sendData("recvtest")'>recvtest</button>
+        <div id="manual_input">
+            <label>Command + buffer time (s) [TO BE IMPLEMENTED]:
+                <input class="ser_entry" type="text" id="manent" name="manent" placeholder="put a command here">
+                <input class="ser_entry" type="text" id="buftime" size="2" name="buftime" value="0.1">
+                <input class="ser_button man" type="submit" name="ser_button" value="run manual input">
+            </label>
         </div>
-        <div class="args_row">
-            <div class="args_col" id="args_left">
-                <label class="arg_lab">ARG 1: <input class="entry" id="entry_arg1" size="2" type="text"
-                        name="term_entry_arg1" value=""></label>
-                <!-- For attribute in label not needed because implicit-->
-                &nbsp;
-                <label class="arg_lab">ARG 2: <input class="entry" id="entry_arg2" size="2" type="text"
-                        name="term_entry_arg2" value=""></label>
-            </div>
-            <div class="args_col" id="args_mid">
-                <label class="args_lab">Available ports:
-                    <select name="ports" id="port-select">
-                        <option class="conv_list" value=""></option>
-                        {% for port in ser_ports %}
-                        <script>console.log("{{ port }}")</script>
-                        <option class="conv_list" value="{{ port }}">{{ port }}</option>
-                        {% endfor %}
-                    </select>
-                </label>
-            </div>
-            <div class="args_col" , id="args_right">
-                Converter type:
-                <label class="args_lab"><input class="radio_conv" type="radio" name="conv_type" value="HPC">HPC</label>
-                <label class="args_lab"><input class="radio_conv" type="radio" name="conv_type"
-                        value="FO/LCC">FO/LCC</label>
-
-            </div>
+    </div>
+    <div class="args_row">
+        <div class="args_col" id="args_left">
+            <label class="arg_lab">ARG 1: <input class="entry" id="entry_arg1" size="2" type="text"
+                    name="term_entry_arg1" value=""></label>
+            <!-- For attribute in label not needed because implicit-->
+            &nbsp;
+            <label class="arg_lab">ARG 2: <input class="entry" id="entry_arg2" size="2" type="text"
+                    name="term_entry_arg2" value=""></label>
         </div>
-    </form>
-    <button onclick="updateEntryData(ent);">test</button>
+        <div class="args_col" id="args_mid">
+            <label class="args_lab">Available ports:
+                <select name="ports" id="port-select">
+                    <option class="conv_list" value=""></option>
+                    {% for port in ser_ports %}
+                    <script>console.log("{{ port }}")</script>
+                    <option class="conv_list" value="{{ port }}">{{ port }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+        </div>
+        <div class="args_col" , id="args_right">
+            Converter type:
+            <label class="args_lab"><input class="radio_conv" type="radio" name="conv_type" value="HPC">HPC</label>
+            <label class="args_lab"><input class="radio_conv" type="radio" name="conv_type"
+                    value="FO/LCC">FO/LCC</label>
+        </div>
+    </div>
 </div>
+<!-- <button onclick="updateEntryData(ent);">test</button>
+<button onclick="console.log(getEntryData());">test2</button>
+<button onclick="test();">test3</button>
+<button onclick="sendData();">test4</button> -->
 <pre id="term">
-{% for line in terminal %}
-{{ line }}
+{% for line in terminal_text %}  {{ line }}
 {% endfor %}
 </pre>
 {% endblock%}
 
 {% block footer %}
-
+<form hidden id="finalForm" method="post">
+    <input hidden id="finalData" type="text" name="data" value="bla">
+    {% csrf_token %}
+</form>
 {% endblock%}
