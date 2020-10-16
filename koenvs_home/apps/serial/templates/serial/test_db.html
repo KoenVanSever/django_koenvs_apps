@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block main %}
+    <ul>
+        {% for temp in test_list %}
+            <li><a href="{% url 'serial:test_db_extra' temp.id %}">{{ temp.name }} ({{ temp.pid }}) from {{ temp.supplier }}: {{ temp.conv_type }} &Rarrtl; {{ temp.remark }}</a></li>
+        {% empty %}
+            <li>No converters yet!</li>
+        {% endfor %}
+    </ul>
+{% endblock %}

@@ -1,11 +1,13 @@
 // * Declaration of variables
-let arg1 = document.querySelector("#entry_arg1")
-let arg2 = document.querySelector("#entry_arg2")
-let hpc = document.querySelectorAll("input[type='radio'][value='HPC']")[0]
-let fo = document.querySelectorAll("input[type='radio'][value='FO/LCC']")[0]
-let portList = document.querySelectorAll("option[class='conv_list']")
+let arg1 = document.querySelector("#entry_arg1");
+let arg2 = document.querySelector("#entry_arg2");
+let hpc = document.querySelectorAll("input[type='radio'][value='HPC']")[0];
+let fo = document.querySelectorAll("input[type='radio'][value='FO/LCC']")[0];
+let portList = document.querySelectorAll("option[class='conv_list']");
+let bufTimeMan = document.getElementById("buftime");
 let finalForm = document.getElementById("finalForm");
 let finalData = document.getElementById("finalData");
+let dialog = document.querySelector('.example-dialog');
 
 // /i function declaration: loads before any code is executed (delays program before any code is ran)
 // /i this also means that the function can be called before it is declared!!! function expression can not do that
@@ -41,6 +43,7 @@ let getPortStatus = () => {
 function updateEntryData(entry) {
     arg1.value = entry["arg1"];
     arg2.value = entry["arg2"];
+    bufTimeMan.value = entry["buf_time_man"];
     if (entry["conv"] == "HPC") {
         hpc.setAttribute("checked", "checked")
     } else {
@@ -55,24 +58,61 @@ function updateEntryData(entry) {
             portList[i].setAttribute("selected", "selected");
         }
     };
-
     console.log(entry);
+    if (entry["ledcalib_state"][0] == "low" || entry["ledcalib_state"][0] == "high") {
+        showDialogLedCalib();
+    }
 };
 
-function getEntryData(comm) {
+function getEntryData(comm, manual = false, ledcalib_state = ["off", 0]) {
     let temp = {
         "arg1": arg1.value,
         "arg2": arg2.value,
         "conv": getConvStatus(),
         "sel_port": getPortStatus(),
         "command": comm,
+        "buf_time_man": bufTimeMan.value,
+        "manual": manual,
+        "ledcalib_state": ledcalib_state,
     };
     return JSON.stringify(temp)
 };
 
 function sendData(comm) {
-    finalData.setAttribute("value", getEntryData(comm))
+    finalData.setAttribute("value", getEntryData(comm));
     finalForm.submit();
+}
+
+function sendManData() {
+    let manEnt = document.getElementById("manent");    
+    finalData.setAttribute("value", getEntryData(manEnt.value, true));
+    finalForm.submit();
+}
+
+// ! dialog in Firefox --> surf to "about:config" in webbrowser and search for dom.enable_dialog and enable this configuration parameter to be able to use
+
+function showDialogLedCalib() {
+    if (typeof dialog.showModal === 'function') {
+        dialog.showModal();
+        console.log("dialog showed");
+    } else {
+        console.log('The dialog API is not supported by this browser');
+    };
+};
+
+function submitLedCalib() {
+    let curr = document.getElementById("curr_input").value;
+    console.log("current value: ", curr);
+    let temp = ent["ledcalib_state"];
+    temp[1] = curr;
+    finalData.setAttribute("value", getEntryData("ledcalib", false, temp));
+    finalForm.submit();
+    console.log("LED current submitted");
+};
+
+function abortLedCalib() {
+    console.log("LED calib aborted");
+    dialog.close()
 }
 
 // ACTIONS ON LOADING

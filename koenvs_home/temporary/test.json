@@ -1,1 +1,19 @@
-{"entry_data": "{\"arg1\": 5, \"arg2\": 3, \"conv\": \"HPC\", \"sel_port\": \"/dev/ttyUSB0  -  TTL232R-3V3\"}", "ser_ports": ["/dev/ttyUSB0  -  TTL232R-3V3"]}
+{
+  "entry_data": {
+    "arg1": 5,
+    "arg2": 3,
+    "conv": "HPC",
+    "sel_port": "/dev/ttyUSB0  -  TTL232R-3V3",
+    "command": "",
+    "buf_time_man": "",
+    "manual": false,
+    "ledcalib_state": [
+      "off",
+      0
+    ]
+  },
+  "ser_ports": [
+    "/dev/ttyS4  -  n/a",
+    "/dev/ttyUSB0  -  TTL232R-3V3"
+  ]
+}

@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block main %}
+    <h2>{{ converter.name }} ({{ converter.pid }})</h2>
+    <h3>LED calibration information</h3>
+    <ul>
+        {% for cal in ledcalib %}
+            <li>channel: {{ cal.channel }} &nrArr; low: {{ cal.ledcalib_low }} high: {{ cal.ledcalib_high }}</li>
+        {% empty %}
+            <li>No CCR calib data available</li>
+        {% endfor %}
+    </ul>
+    <h3>CCR calibration information</h3>
+    <ul>
+        {% for cal in ccrcalib %}
+            <li>channel: {{ cal.channel }} &nrArr; low: {{ cal.calibccrlo }} high: {{ cal.calibccrhi }}</li>
+        {% empty %}
+            <li>No CCR calib data available</li>
+        {% endfor %}
+    </ul>
+{% endblock %}

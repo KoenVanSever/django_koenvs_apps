@@ -3,11 +3,14 @@
 {% block head %}
 <title>KoenVS - Serial</title>
 <script defer>
-    let ent = JSON.parse("{{ entry_data | escapejs }}");
+    const ent = JSON.parse("{{ entry_data | escapejs }}");
     console.log(ent);
 </script>
 {% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/serial.css' %}">
 <script type="text/javascript" src="{% static 'js/serial.js' %}" defer></script>
+<script type="text/javascript" src="{% static 'js/scroll.js' %}" defer></script>
+<script type="text/javascript" src="{% static 'js/serial_dialog.js' %}" defer></script>
 {% endblock %}
 
 {% block header %}
@@ -26,30 +29,42 @@
         <button class="ser_button gen" onclick='sendData("clear")'>clear terminal</button>
         <button class="ser_button gen" onclick='sendData("help")'>show help</button>
         <button class="ser_button gen" onclick='sendData("readvolt")'>readvolt</button>
+        <button class="ser_button gen" onclick='sendData("recvtest")'>recvtest (only HPC)</button>
         <button class="ser_button ccr" onclick='sendData("calibccrlo 2000")'>calibccrlo 2000</button>
         <button class="ser_button ccr" onclick='sendData("calibccrhi 6600")'>calibcrrhi 6600</button>
         <button class="ser_button ccr" onclick='sendData("calibccrsave yes")'>calibccrsave yes</button>
-        <button class="ser_button ccr" onclick='sendData("getccr")'>getccr</button>
+        <button class="ser_button ccr" onclick='sendData("getccr")'>ccr current measurement</button>
         <button class="ser_button ccr" onclick='sendData("getcalib")'>getcalib</button>
-        <button class="ser_button led" onclick='sendData("ledinfo ARG1 ARG2")'>ledinfo ARG1 ARG2</button>
-        <button class="ser_button led" onclick='sendData("ledcalib ARG1")'>ledcalib ARG1</button>
-        <button class="ser_button led" onclick='sendData("getledcalib ARG1")'>getledcalib ARG1</button>
-        <button class="ser_button led" onclick='sendData("ledinactivate ARG1")'>ledinactivate ARG1</button>
-        <button class="ser_button led" onclick='sendData("getledstatus ARG1")'>getledstatus ARG1</button>
-        <button class="ser_button led" onclick='sendData("setledovr ARG1 ARG2")'>setledovr ARG1 ARG2</button>
-        <button class="ser_button led" onclick='sendData("setledovr2 ARG1 ARG2")'>setledovr2 ARG1 ARG2</button>
-        <button class="ser_button asp" onclick='sendData("rx ARG1 ARG2")'>rx ARG1 ARG2</button>
-        <button class="ser_button asp" onclick='sendData("asp on")'>asp on</button>
-        <button class="ser_button asp" onclick='sendData("asp off")'>asp off</button>
-        <button class="ser_button asp" onclick='sendData("setTXpower ARG1")'>setTXpower ARG1</button>
-        <button class="ser_button asp" onclick='sendData("params dump")'>params dump</button>
-        <button class="ser_button asp" onclick='sendData("recvtest")'>recvtest</button>
+        <button class="ser_button led" onclick='sendData("ledinfo")'>ledinfo ARG1 ARG2</button>
+        <button class="ser_button led" onclick='sendData("ledcalib")'>ledcalib ARG1</button>
+        <button class="ser_button led" onclick='sendData("getledcalib")'>getledcalib ARG1</button>
+        <button class="ser_button led" onclick='sendData("ledinactivate")'>ledinactivate ARG1</button>
+        <button class="ser_button led" onclick='sendData("getledstatus")'>getledstatus ARG1</button>
+        <button class="ser_button led" onclick='sendData("setledovr")'>setledovr ARG1 ARG2</button>
+        <button class="ser_button led" onclick='sendData("setledovr2")'>setledovr2 ARG1 ARG2</button>
+        <button class="ser_button asp" onclick='sendData("rx")'>rx ARG1 ARG2 (only HPC)</button>
+        <button class="ser_button asp" onclick='sendData("asp on")'>asp on (only HPC)</button>
+        <button class="ser_button asp" onclick='sendData("asp off")'>asp off (only HPC)</button>
+        <button class="ser_button asp" onclick='sendData("setTXpower")'>setTXpower ARG1 (only HPC)</button>
+        <button class="ser_button asp" onclick='sendData("params dump")'>params dump (only HPC)</button>
+        <button class="ser_button asp" onclick='sendData("getPID")'>getPID (only HPC)</button>
+        <button class="ser_button asp" onclick='sendData("setPID")'>setPID (only HPC)</button>
         <div id="manual_input">
-            <label>Command + buffer time (s) [TO BE IMPLEMENTED]:
-                <input class="ser_entry" type="text" id="manent" name="manent" placeholder="put a command here">
-                <input class="ser_entry" type="text" id="buftime" size="2" name="buftime" value="0.1">
-                <input class="ser_button man" type="submit" name="ser_button" value="run manual input">
-            </label>
+            <div id="man_label">
+                <label>Command + buffer time (s):
+                    <!-- <input class="ser_entry" type="text" id="manent" name="manent" placeholder="put a command here">
+                    <input class="ser_entry" type="text" id="buftime" size="2" name="buftime" value="0.1">
+                    <input class="ser_button man" type="submit" name="ser_button" value="run manual input"> -->
+                    <input class="ser_entry" type="text" id="manent" name="manent" placeholder="put a command here">
+                    <input class="ser_entry" type="text" id="buftime" size="2" name="buftime" placeholder="0.1">
+                    <button class="ser_button man" id="manent_but" onclick='sendManData();'>run manual command</button>
+                </label>
+            </div>
+            <div id="pid_label">
+                <label>
+                    PID: <input class="ser_entry" type="text" id="pid_entry" value="">
+                </label>
+            </div>
         </div>
     </div>
     <div class="args_row">
@@ -84,6 +99,13 @@
 <button onclick="console.log(getEntryData());">test2</button>
 <button onclick="test();">test3</button>
 <button onclick="sendData();">test4</button> -->
+<!-- ! dialog in Firefox - surf to "about:config" in webbrowser and search for dom.enable_dialog and enable this configuration parameter to be able to use -->
+<dialog class="example-dialog">
+    <label>Input current measured: <input type="text" id="curr_input" size=3></label>
+    <button onclick="submitLedCalib()">Submit</button>
+    <button onclick="abortLedCalib();">Abort</button>
+</dialog>
+
 <pre id="term">
 {% for line in terminal_text %}  {{ line }}
 {% endfor %}
