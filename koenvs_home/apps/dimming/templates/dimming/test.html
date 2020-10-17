@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>KoenVS - Image Test</title>
+{% endblock %}
+
+{% block header %}
+<div id="header_title_container">
+    <h1>Image Test</h1>
+</div>
+{% endblock %}
+
+{% block main %}
+{% load static %}
+<img src="{% static 'media/test.svg' %}" type="image/svg">
+{% endblock %}

@@ -22,8 +22,7 @@ main {
     border-style: solid;
     border-width: 4px;
     border-color: #004c5ed8;
-    padding: 0.8% 0.75% 0.8% 0.75%;
-    margin-bottom: 5px;
+    padding: 10px 0.75% 10px 0.75%;
     margin-top: 10px;
 }
 
@@ -31,9 +30,9 @@ main {
     color: white;
     border-radius: 5px;
     width: 16.3%;
-    height: 2em;
+    height: 30px;
     word-wrap: break-word;
-    font-size: 1em;
+    font-size: 15px;
     margin-bottom: 2px;
     border-color: gray;
     position: relative;
@@ -60,6 +59,7 @@ main {
     padding: 5px 0.5% 5px 0.5%;
     display: flex;
     align-items: center;
+    margin-top: 8px;
 }
 
 .args_col { float: left; width: 33%; }
@@ -77,8 +77,9 @@ main {
     border-color: #f49b01;
     color: white;
     word-wrap: break-word;
-    min-height: 30em;
-    max-height: 35em; 
+    height: calc(100% - 420px);
+    /* min-height: 30em;
+    max-height: 35em;  */
     width: 90%;
     margin-left: auto;
     margin-right: auto;

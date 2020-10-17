@@ -87,7 +87,7 @@ function sendData(comm) {
 }
 
 function sendManData() {
-    let manEnt = document.getElementById("manent");    
+    let manEnt = document.getElementById("manent");
     finalData.setAttribute("value", getEntryData(manEnt.value, true));
     finalForm.submit();
 }
@@ -116,7 +116,27 @@ function submitLedCalib() {
 function abortLedCalib() {
     console.log("LED calib aborted");
     dialog.close()
+};
+
+function testMinimize() {
+    let temp = document.getElementById("comm_butt_div");
+    let term = document.querySelector("#term")
+    let height = getComputedStyle(term).getPropertyValue("height").match(/\d*/);
+    // /i the .match(/\d/) is converting to a number with format .match(regexp) "/\d/" --> forward slashes show regexp, backslash d means look for numbers
+    if (temp.hidden === true) {
+        temp.hidden = false;
+        target = (Number(height) - 238) + "px";
+        console.log(target)
+        term.style.height = target;
+    } else {
+        temp.hidden = true;
+        target = (Number(height) + 238) + "px";
+        term.style.height = target;
+    }
+    console.log("new height is:", term.style.height)
 }
+
+document.querySelector(".args_row").addEventListener("click", testMinimize, false);
 
 // ACTIONS ON LOADING
 updateEntryData(ent)
