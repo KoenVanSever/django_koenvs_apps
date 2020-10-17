@@ -8,6 +8,7 @@ let bufTimeMan = document.getElementById("buftime");
 let finalForm = document.getElementById("finalForm");
 let finalData = document.getElementById("finalData");
 let dialog = document.querySelector('.example-dialog');
+let pid = document.querySelector('#pid_entry');
 
 // /i function declaration: loads before any code is executed (delays program before any code is ran)
 // /i this also means that the function can be called before it is declared!!! function expression can not do that
@@ -62,6 +63,7 @@ function updateEntryData(entry) {
     if (entry["ledcalib_state"][0] == "low" || entry["ledcalib_state"][0] == "high") {
         showDialogLedCalib();
     }
+    pid.value = entry["pid"];
 };
 
 function getEntryData(comm, manual = false, ledcalib_state = ["off", 0]) {
@@ -74,6 +76,7 @@ function getEntryData(comm, manual = false, ledcalib_state = ["off", 0]) {
         "buf_time_man": bufTimeMan.value,
         "manual": manual,
         "ledcalib_state": ledcalib_state,
+        "pid": pid.value,
     };
     return JSON.stringify(temp)
 };

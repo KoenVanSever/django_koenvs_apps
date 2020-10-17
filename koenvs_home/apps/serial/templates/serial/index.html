@@ -10,7 +10,6 @@
 <link rel="stylesheet" type="text/css" href="{% static 'css/serial.css' %}">
 <script type="text/javascript" src="{% static 'js/serial.js' %}" defer></script>
 <script type="text/javascript" src="{% static 'js/scroll.js' %}" defer></script>
-<script type="text/javascript" src="{% static 'js/serial_dialog.js' %}" defer></script>
 {% endblock %}
 
 {% block header %}
@@ -62,7 +61,7 @@
             </div>
             <div id="pid_label">
                 <label>
-                    PID: <input class="ser_entry" type="text" id="pid_entry" value="">
+                    PID: <input class="ser_entry" type="text" size="13" id="pid_entry" value="">
                 </label>
             </div>
         </div>

@@ -7,6 +7,18 @@ from json import dumps, dump, loads
 import serial.tools.list_ports as stl  # pylint: disable=import-error disable=no-name-in-module
 from time import sleep
 import sys
+from datetime import date
+
+# * STARTUP FUNCTIONS
+
+def get_init_pid():
+    today = date.today().isocalendar()
+    year = str(today[0])[-2:]
+    week = str(today[1])
+    week = "0" + week if len(week) < 2 else week
+    supp = "04"
+    sn = "0000001"
+    return (year + week + supp + sn)
 
 
 def gen_ports_list():
@@ -32,7 +44,7 @@ if sys.platform == "linux":
 else:
     start_port = ports_list[0]
 entry_data = {"arg1": 5, "arg2": 3, "conv": "HPC",
-              "sel_port": start_port, "command": "", "buf_time_man": "", "manual": False, "ledcalib_state": ["off", 0]}
+              "sel_port": start_port, "command": "", "buf_time_man": "", "manual": False, "ledcalib_state": ["off", 0], "pid": get_init_pid()}
 terminal_text = [""]
 prefix = ""
 # with open("temporary/test.json", "w") as f:
@@ -250,8 +262,14 @@ def serialIndex(request):
                 elif comm_proc == "getPID":
                     append_term("getPID", 0.1)
                 elif comm_proc == "setPID":
-                    # TODO: take PID entry field and implement code for PID programmation of PCBAs..
-                    terminal_text.append("Command not implemented yet")
+                    # DONE: take PID entry field and implement code for PID programmation of PCBAs..
+                    sending = f"setPID {entry_data['pid']}"
+                    append_term(sending, 0.3)
+                    sleep(0.05)
+                    ser.write("yes\r".encode("utf8"))
+                    sleep(0.1)
+                    read = ser.read_print_buffer()
+                    terminal_text = terminal_text + read.split("\n")
 
                 # * not implemented
                 else:
