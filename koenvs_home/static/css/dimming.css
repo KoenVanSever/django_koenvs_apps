@@ -4,9 +4,36 @@
     margin-right: auto;
     height: 100%;
     display: flex;
+    font: 1em "Helvetica", sans-serif;
 }
 
-.main { float: left; margin-top: 10px;}
-#selection_container { width: calc(100% - 800px); }
+.main { float: left; margin-top: 10px; }
+
+#selection_container { width: calc(100% - 800px); padding-right: 10px; }
+#file_entry { 
+    border-style: solid;
+    border-color: #f49b01;
+    border-radius: 25px;
+    border-width: 4px;
+    padding: 10px;
+}
+.sub_button { margin: 5px 0px 5px 5px; }
+.file_ele { margin: 5px; }
+#plot_selection {
+    margin-top: 10px;
+    border-style: solid;
+    border-color: #f49b01;
+    border-radius: 25px;
+    border-width: 4px;
+    padding: 10px;
+}
+#plot_selection h2 {
+    font-size: 1.5em;
+    color: #004c5e;
+    text-decoration: underline;
+    margin-top: 2px;
+    margin-bottom: 2px;
+}
+
 #image_container { width: 800px; }
-#dimm_image { border-style: solid; border-color: #f49b01; border-width: 4px; }
+#dimm_image { border-style: solid; border-color: #f49b01; border-width: 4px; border-radius: 25px; }

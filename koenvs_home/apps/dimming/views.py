@@ -1,7 +1,10 @@
 from django.shortcuts import render
 from django.views import generic
+from django.views.decorators.http import require_http_methods
+from django.core.files.storage import FileSystemStorage
 from django.http import HttpResponse
 from django.conf import settings
+from .forms import UploadFileForm
 # ! imported for image rendering
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.figure import Figure
@@ -15,6 +18,7 @@ from pandas import read_csv
 # * MATPLOTLIB CONFIGURATION
 mpl.rcParams["figure.figsize"] = 8, 6
 mpl.rcParams["figure.dpi"] = 100
+mpl.rcParams["axes.grid"] = True
 # BASE_DIR = os.getcwd()
 # target_file = os.path.join(BASE_DIR, "temporary/rcParams.txt")
 # with open(target_file, "w") as f:
@@ -22,6 +26,18 @@ mpl.rcParams["figure.dpi"] = 100
 #         f.write(f"{k}: {v}\n")
 
 # Create your views here.
+
+
+def create_base_fig_ax():
+    fig, ax = plt.subplots(1, 1)
+    ax.set_xlabel("Input current (Arms)")
+    ax.set_ylabel("Relative intensity (%)")
+    ax.set_xticks([2.4, 2.8, 3.1, 3.4, 3.8, 4.1,
+                   4.5, 4.8, 5.2, 5.5, 5.8, 6.2, 6.6])
+    ax.set_xlim([2.3, 6.8])
+    ax.set_ylim([-5, 105])
+    ax.set_title("Dimming curve plot")
+    return fig, ax
 
 
 def split_base_ext_series(pd_ser):
@@ -41,41 +57,58 @@ def plot_ser(ax, abs_path_plot_list):
         ax.plot(df.input, df.output, label=os.path.basename(x).split(".")[0])
 
 
-def dimmingIndex(request):
-    # * GETTING DATA AND CONSTRUCTING CONTEXT
-    target_directory = os.path.join(
-        settings.STATICFILES_DIRS[0], "data/dimming/")
-    target_file = os.path.join(
-        settings.STATICFILES_DIRS[0], "media/temporary/temp.svg")
+def refresh_files_list(target_dir):
     full_dirlist = pd.DataFrame()
-    full_dirlist["listdir"] = os.listdir(target_directory)
+    full_dirlist["listdir"] = os.listdir(target_dir)
     full_dirlist["full_path"] = [os.path.join(
-        target_directory, x) for x in full_dirlist["listdir"]]
+        target_dir, x) for x in full_dirlist["listdir"]]
     full_dirlist["basename"], full_dirlist["ext"] = split_base_ext_series(
         full_dirlist["listdir"])
     csv_dirlist = full_dirlist[full_dirlist["ext"] == ".csv"]
-    csvfiles = list(
-        csv_dirlist["basename"])
+    csvfiles = sorted(list(
+        csv_dirlist["basename"]))
+    return csv_dirlist, csvfiles
+
+
+@require_http_methods(["GET", "POST"])
+def dimmingIndex(request):
+    # * GETTING DATA AND CONSTRUCTING CONTEXT
+    target_directory = os.path.join(
+        settings.STATICFILES_DIRS[0], "data/dimming/generated")
+    target_file = os.path.join(
+        settings.STATICFILES_DIRS[0], "media/temporary/temp.svg")
+    csv_dirlist, csvfiles = refresh_files_list(target_directory)
 
     # * ACTING ON USER INPUT
     if request.method == "GET":
-        fig, ax = plt.subplots(1, 1)
-        ax.legend()
+        fig, ax = create_base_fig_ax()
+        ax.legend(loc="upper left")
         fig.savefig(target_file)
+        # file_form = UploadFileForm()
     elif request.method == "POST":
-        requested = request.POST.getlist("check")
-        # TODO: clean this up
-        req_full = list(list(csv_dirlist.loc[csv_dirlist["basename"] == x]
-                             ["full_path"])[0] for x in requested)
-        fig, ax = plt.subplots(1, 1)
-        plot_ser(ax, req_full)
-        ax.legend()
-        fig.savefig(target_file)
+        if "check" in request.POST.keys():
+            requested = request.POST.getlist("check")
+            # TODO: clean this up
+            req_full = list(list(csv_dirlist.loc[csv_dirlist["basename"] == x]
+                                 ["full_path"])[0] for x in requested)
+            print(req_full)
+            fig, ax = create_base_fig_ax()
+            plot_ser(ax, req_full)
+            ax.legend(loc="upper left")
+            fig.savefig(target_file)
+        elif "file_input" in request.FILES.keys():
+            # file_form = UploadFileForm(request.POST, request.FILES)
+            myfile = request.FILES['file_input']
+            fs = FileSystemStorage(location=target_directory)
+            fs.save(myfile.name, myfile)
+            csv_dirlist, csvfiles = refresh_files_list(
+                target_directory)
     return render(request, "dimming/index.html", {"csvfiles": csvfiles})
+    # return render(request, "dimming/index.html", {"csvfiles": csvfiles, "file_form": file_form.as_p()})
 
-# ! ---------------------------
-# ! UNDER DEVELOPMENT / TESTING
-# ! ---------------------------
+# ! ------------------------------
+# ! UNDER DEVELOPMENT / TESTING --
+# ! ------------------------------
 
 
 def setPlt():

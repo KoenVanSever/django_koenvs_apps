@@ -15,13 +15,29 @@
 {% block main %}
 <div id="main_div">
     <div id="selection_container" class="main">
-        <form method="post" action="{% url 'dimming:index' %}">
-            {% csrf_token %}
-            {% for file in csvfiles %}
-            <label><input type="checkbox" name="check" value="{{ file }}">{{ file }}</label><br>
-            {% endfor %}
-            <input type="submit" value="update graph">
-        </form>
+        <div id="file_entry">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <label class="file_ele">Choose CSV file(s) with plotting data:<br>
+                    <input type="file" class="file_ele" id="file_input" name="file_input" accept=".csv"
+                        multiple></label><br>
+                <input type="submit" class="sub_button" value="Submit">
+            </form>
+        </div>
+        <!-- TODO: add a div that handles saving of the image file -->
+        <!-- <div id="save_file">
+
+        </div> -->
+        <div id="plot_selection">
+            <h2>Available files:</h2>
+            <form method="post" action="{% url 'dimming:index' %}">
+                {% csrf_token %}
+                {% for file in csvfiles %}
+                <label><input type="checkbox" name="check" value="{{ file }}"> {{ file }}</label><br>
+                {% endfor %}
+                <input type="submit" class="sub_button" value="update graph">
+            </form>
+        </div>
     </div>
     <div id="image_container" class="main">
         {% load static %}
