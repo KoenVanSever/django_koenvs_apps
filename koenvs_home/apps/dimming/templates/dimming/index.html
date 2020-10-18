@@ -2,6 +2,8 @@
 
 {% block head %}
 <title>KoenVS - Dimming</title>
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/dimming.css' %}">
 {% endblock %}
 
 {% block header %}
@@ -11,7 +13,21 @@
 {% endblock %}
 
 {% block main %}
-
+<div id="main_div">
+    <div id="selection_container" class="main">
+        <form method="post" action="{% url 'dimming:index' %}">
+            {% csrf_token %}
+            {% for file in csvfiles %}
+            <label><input type="checkbox" name="check" value="{{ file }}">{{ file }}</label><br>
+            {% endfor %}
+            <input type="submit" value="update graph">
+        </form>
+    </div>
+    <div id="image_container" class="main">
+        {% load static %}
+        <img id="dimm_image" src="{% static 'media/temporary/temp.svg' %}" type="image/svg">
+    </div>
+</div>
 {% endblock%}
 
 {% block footer %}

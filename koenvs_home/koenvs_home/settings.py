@@ -130,19 +130,21 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 
-# /i where does root directory start
+# /i static root is only useful for deployment! Every static file will be stored here
 STATIC_ROOT = os.path.join(BASE_DIR, '/static/')
 # /i static url
 STATIC_URL = '/static/'
-# /i run 'python manage.py collectstatic' to pull all static files to this directory (where are statics stored)
+# /i run 'python manage.py collectstatic' to pull all static files stored in this directory to your STATIC ROOT
 STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
 
+
 # STATICFILES_FINDERS = (
 #     'django.contrib.staticfiles.finders.FileSystemFinder',
 #     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-# ) # /i where to look for static files
+# )
+# /i where to look for static files, commented out to look into separate apps
 
 # Media Files
 # /i where does root directory start
