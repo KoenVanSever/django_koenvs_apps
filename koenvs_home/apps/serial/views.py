@@ -34,7 +34,9 @@ def gen_ports_list():
 # ! THESE ARE GLOBAL VARIABLES, TAKE CARE WITH GLOBAL SCOPE WITHIN FUNCTIONS
 
 _, ports_list = gen_ports_list()
-ser = Sfs()  # /i MAIN SER OBJECT
+# TODO: clean this up
+temp = str(ports_list[0].split("-")[0]).rstrip()
+ser = Sfs(port = temp)  # /i MAIN SER OBJECT
 ser.close()  # /i close port by default when starting application
 start_port = ""
 if sys.platform == "linux":

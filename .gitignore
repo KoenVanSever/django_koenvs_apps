@@ -3,3 +3,4 @@
 djangoenv/
 *.pyc
 koenvs_home/static/media/temporary/
+django/
