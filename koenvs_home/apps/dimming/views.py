@@ -14,6 +14,11 @@ import io
 import os
 import pandas as pd
 from pandas import read_csv
+from pathlib import Path
+
+# ! HIGH LEVEL ACTIONS:
+# TODO: put context on webpage so that it remembers which lines were selected and formats page in such a way that it is visible
+
 
 # * MATPLOTLIB CONFIGURATION
 mpl.rcParams["figure.figsize"] = 8, 6
@@ -24,8 +29,15 @@ mpl.rcParams["axes.grid"] = True
 # with open(target_file, "w") as f:
 #     for k, v in mpl.rcParams.items():
 #         f.write(f"{k}: {v}\n")
-
-# Create your views here.
+# * GLOBAL DIRECTORY SETUP
+# TODO: clean this shit up with patlib instead of os.path
+target_directory = os.path.join(
+    settings.STATICFILES_DIRS[0], "data", "dimming", "generated")
+limit_directory = Path(
+    settings.STATICFILES_DIRS[0], "data", "dimming", "limits")
+target_file = os.path.join(
+    settings.STATICFILES_DIRS[0], "media", "temporary", "temp.svg")
+print(target_directory, target_file)
 
 
 def create_base_fig_ax():
@@ -73,11 +85,8 @@ def refresh_files_list(target_dir):
 @require_http_methods(["GET", "POST"])
 def dimmingIndex(request):
     # * GETTING DATA AND CONSTRUCTING CONTEXT
-    target_directory = os.path.join(
-        settings.STATICFILES_DIRS[0], "data/dimming/generated")
-    target_file = os.path.join(
-        settings.STATICFILES_DIRS[0], "media/temporary/temp.svg")
     csv_dirlist, csvfiles = refresh_files_list(target_directory)
+    limit_dirlist, limitfiles = refresh_files_list(limit_directory)
 
     # * ACTING ON USER INPUT
     if request.method == "GET":
@@ -86,11 +95,16 @@ def dimmingIndex(request):
         fig.savefig(target_file)
         # file_form = UploadFileForm()
     elif request.method == "POST":
-        if "check" in request.POST.keys():
-            requested = request.POST.getlist("check")
+        print(request.POST)
+        if ("check_files" in request.POST.keys()) or ("check_limits" in request.POST.keys()):
+            requested_files = request.POST.getlist("check_files")
+            requested_limits = request.POST.getlist("check_limits")
             # TODO: clean this up
-            req_full = list(list(csv_dirlist.loc[csv_dirlist["basename"] == x]
-                                 ["full_path"])[0] for x in requested)
+            req_files = list(list(csv_dirlist.loc[csv_dirlist["basename"] == x]
+                                  ["full_path"])[0] for x in requested_files)
+            req_limits = list(list(limit_dirlist.loc[limit_dirlist["basename"] == x]
+                                   ["full_path"])[0] for x in requested_limits)
+            req_full = req_files + req_limits
             print(req_full)
             fig, ax = create_base_fig_ax()
             plot_ser(ax, req_full)
@@ -98,12 +112,20 @@ def dimmingIndex(request):
             fig.savefig(target_file)
         elif "file_input" in request.FILES.keys():
             # file_form = UploadFileForm(request.POST, request.FILES)
-            myfile = request.FILES['file_input']
+            myfiles = request.FILES.getlist('file_input')
             fs = FileSystemStorage(location=target_directory)
-            fs.save(myfile.name, myfile)
+            for file in myfiles:
+                if file.name in list(csv_dirlist["listdir"]):
+                    continue
+                fs.save(file.name, file)
             csv_dirlist, csvfiles = refresh_files_list(
                 target_directory)
-    return render(request, "dimming/index.html", {"csvfiles": csvfiles})
+        elif "file_other" in request.POST.keys():
+            for file in csv_dirlist["full_path"]:
+                # print(file)
+                os.remove(file)
+            csv_dirlist, csvfiles = refresh_files_list(target_directory)
+    return render(request, "dimming/index.html", {"csvfiles": csvfiles, "limitfiles": limitfiles})
     # return render(request, "dimming/index.html", {"csvfiles": csvfiles, "file_form": file_form.as_p()})
 
 # ! ------------------------------

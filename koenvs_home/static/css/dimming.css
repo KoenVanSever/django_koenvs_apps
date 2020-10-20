@@ -10,30 +10,30 @@
 .main { float: left; margin-top: 10px; }
 
 #selection_container { width: calc(100% - 800px); padding-right: 10px; }
-#file_entry { 
+.selection_col { display: flex; }
+.selection_col_child { 
+    width: calc(50%-5px);
     border-style: solid;
     border-color: #f49b01;
     border-radius: 25px;
     border-width: 4px;
     padding: 10px;
+    width: 50%;
+    float: left;
 }
-.sub_button { margin: 5px 0px 5px 5px; }
-.file_ele { margin: 5px; }
-#plot_selection {
-    margin-top: 10px;
-    border-style: solid;
-    border-color: #f49b01;
-    border-radius: 25px;
-    border-width: 4px;
-    padding: 10px;
-}
-#plot_selection h2 {
+.selection_col_child h2 {
     font-size: 1.5em;
     color: #004c5e;
     text-decoration: underline;
     margin-top: 2px;
     margin-bottom: 2px;
 }
+.row_not_top { margin-top: 10px; height: calc(80% - 20px) }
+.row_top { height: 20%; }
+.col_left { margin-right: 5px; }
+.col_right { margin-left: 5px; }
+.sub_button { margin: 5px 0px 5px 5px; }
+.file_ele { margin: 5px; }
 
 #image_container { width: 800px; }
 #dimm_image { border-style: solid; border-color: #f49b01; border-width: 4px; border-radius: 25px; }
