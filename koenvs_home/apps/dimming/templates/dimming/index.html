@@ -4,6 +4,11 @@
 <title>KoenVS - Dimming</title>
 {% load static %}
 <link rel="stylesheet" type="text/css" href="{% static 'css/dimming.css' %}">
+<script type="text/javascript" defer>
+    let selected = JSON.parse("{{ selected | escapejs }}")
+    console.log(selected)
+</script>
+<script type="text/javascript" src="{% static 'js/dimming.js' %}" defer></script>
 {% endblock %}
 
 {% block header %}
@@ -28,7 +33,7 @@
             <div id="file_other" class="selection_col_child col_right">
                 <form method="POST" action="{% url 'dimming:index' %}">
                     {% csrf_token %}
-                    <input type="submit" name="file_other" value="clear">
+                    <input type="submit" name="file_other" value="clear available files">
                 </form>
             </div>
         </div>
@@ -43,14 +48,16 @@
                 <form method="post" action="{% url 'dimming:index' %}">
                     {% csrf_token %}
                     {% for file in csvfiles %}
-                    <label><input type="checkbox" name="check_files" value="{{ file }}"> {{ file }}</label><br>
+                    <label><input type="checkbox" class="checkbox" name="check_files" value="{{ file }}">
+                        {{ file }}</label><br>
                     {% endfor %}
                     <input type="submit" class="sub_button" value="update graph">
             </div>
             <div id="limit_selection" class="selection_col_child col_right">
                 <h2>Available limitlines:</h2>
                 {% for file in limitfiles %}
-                <label><input type="checkbox" name="check_limits" value="{{ file }}"> {{ file }}</label><br>
+                <label><input type="checkbox" class="checkbox" name="check_limits" value="{{ file }}">
+                    {{ file }}</label><br>
                 {% endfor %}
                 <input type="submit" class="sub_button" value="update graph">
                 </form>

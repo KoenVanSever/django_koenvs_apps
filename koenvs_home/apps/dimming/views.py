@@ -5,6 +5,7 @@ from django.core.files.storage import FileSystemStorage
 from django.http import HttpResponse
 from django.conf import settings
 from .forms import UploadFileForm
+from json import dumps, dump, loads
 # ! imported for image rendering
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.figure import Figure
@@ -17,7 +18,7 @@ from pandas import read_csv
 from pathlib import Path
 
 # ! HIGH LEVEL ACTIONS:
-# TODO: put context on webpage so that it remembers which lines were selected and formats page in such a way that it is visible
+# TODO: put context on webpage so that it remembers which lines were selected and formats page in such a way that it is visibles
 
 
 # * MATPLOTLIB CONFIGURATION
@@ -31,13 +32,12 @@ mpl.rcParams["axes.grid"] = True
 #         f.write(f"{k}: {v}\n")
 # * GLOBAL DIRECTORY SETUP
 # TODO: clean this shit up with patlib instead of os.path
-target_directory = os.path.join(
+target_directory = Path(
     settings.STATICFILES_DIRS[0], "data", "dimming", "generated")
 limit_directory = Path(
     settings.STATICFILES_DIRS[0], "data", "dimming", "limits")
-target_file = os.path.join(
+target_file = Path(
     settings.STATICFILES_DIRS[0], "media", "temporary", "temp.svg")
-print(target_directory, target_file)
 
 
 def create_base_fig_ax():
@@ -87,6 +87,7 @@ def dimmingIndex(request):
     # * GETTING DATA AND CONSTRUCTING CONTEXT
     csv_dirlist, csvfiles = refresh_files_list(target_directory)
     limit_dirlist, limitfiles = refresh_files_list(limit_directory)
+    selected = []
 
     # * ACTING ON USER INPUT
     if request.method == "GET":
@@ -105,7 +106,8 @@ def dimmingIndex(request):
             req_limits = list(list(limit_dirlist.loc[limit_dirlist["basename"] == x]
                                    ["full_path"])[0] for x in requested_limits)
             req_full = req_files + req_limits
-            print(req_full)
+            selected = dumps([os.path.basename(x).split(".")[0]
+                              for x in req_full])
             fig, ax = create_base_fig_ax()
             plot_ser(ax, req_full)
             ax.legend(loc="upper left")
@@ -125,7 +127,7 @@ def dimmingIndex(request):
                 # print(file)
                 os.remove(file)
             csv_dirlist, csvfiles = refresh_files_list(target_directory)
-    return render(request, "dimming/index.html", {"csvfiles": csvfiles, "limitfiles": limitfiles})
+    return render(request, "dimming/index.html", {"csvfiles": csvfiles, "limitfiles": limitfiles, "selected": selected})
     # return render(request, "dimming/index.html", {"csvfiles": csvfiles, "file_form": file_form.as_p()})
 
 # ! ------------------------------
