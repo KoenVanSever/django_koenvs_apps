@@ -2,5 +2,4 @@
 **/__pycache__/
 djangoenv/
 *.pyc
-koenvs_home/static/media/temporary/
 django/

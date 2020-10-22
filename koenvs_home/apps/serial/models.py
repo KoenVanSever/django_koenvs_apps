@@ -1,6 +1,8 @@
 from django.db import models
 
 # Create your models here.
+
+
 class Converter(models.Model):
     # Suppliers
     SUPPLIERS = [
@@ -24,9 +26,11 @@ class Converter(models.Model):
     name = models.TextField()
     pid = models.IntegerField(blank=False)
     supplier = models.CharField(max_length=3, choices=SUPPLIERS)
-    conv_type = models.CharField(max_length=10, choices=CONV_TYPES, blank=False, default=("Unknown"))
+    conv_type = models.CharField(
+        max_length=10, choices=CONV_TYPES, blank=False, default=("Unknown"))
     remark = models.TextField(default="no remarks")
-    
+
+
 class LedCalib(models.Model):
     CHANNELS = [
         ("1", "LED channel A - binary 001 (1)"),
@@ -36,6 +40,7 @@ class LedCalib(models.Model):
     ledcalib_low = models.IntegerField()
     ledcalib_high = models.IntegerField()
     channel = models.CharField(max_length=1, choices=CHANNELS)
+
 
 class CcrCalib(models.Model):
     CHANNELS = [

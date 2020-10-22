@@ -32,6 +32,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'apps.params.apps.ParamsConfig',
     'apps.serial.apps.SerialConfig',
     'apps.dimming.apps.DimmingConfig',
     'apps.magnetics.apps.MagneticsConfig',

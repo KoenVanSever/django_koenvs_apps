@@ -312,10 +312,10 @@ class TestDbListView(ListView):
 def ConvExtraInfo(request, conv_id):
     conv = get_object_or_404(Converter, pk=conv_id)
     try:
-        ledc = LedCalib.objects.filter(
-            conv_id=conv.id)  # pylint: disable=no-member
-        ccrc = CcrCalib.objects.filter(
-            conv_id=conv.id)  # pylint: disable=no-member
+        ledc = LedCalib.objects.filter(  # pylint: disable=no-member
+            conv_id=conv.id)
+        ccrc = CcrCalib.objects.filter(  # pylint: disable=no-member
+            conv_id=conv.id)
     except (KeyError, LedCalib.DoesNotExist, CcrCalib.DoesNotExist):  # pylint: disable=no-member
         return render(request, "serial/conv_info.html", {"converter": conv, "error_message": "No LED calib or CCR calib information found"})
     else:

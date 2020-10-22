@@ -22,5 +22,6 @@ urlpatterns = [
     path('serial/', include('apps.serial.urls')),
     path('dimming/', include('apps.dimming.urls')),
     path('magnetics/', include('apps.magnetics.urls')),
+    path('params/', include('apps.params.urls')),
     path('', views.homeIndex),
 ]

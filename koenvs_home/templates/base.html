@@ -11,8 +11,10 @@
         <header>
             {% block header %}{% endblock %}
             <div id="header_links_container">
+                <a href="{% url 'params:index' %}" class="header_link">Params</a>
                 <a href="{% url 'dimming:index' %}" class="header_link">Dimming</a>
-                <a href="{% url 'magnetics:index' %}" class="header_link">Magnetics</a>
+                <a href="{% url 'magnetics:index' %}" style="background-color: #ff503477;"
+                    class="header_link">Magnetics</a>
                 <a href="{% url 'serial:index' %}" class="header_link">Serial</a>
             </div>
         </header>
