@@ -5,8 +5,11 @@
 {% load static %}
 <link rel="stylesheet" type="text/css" href="{% static 'css/dimming.css' %}">
 <script type="text/javascript" defer>
-    let selected = JSON.parse("{{ selected | escapejs }}")
-    console.log(selected)
+    let selected = JSON.parse("{{ selected | escapejs }}");
+    function updateComm() {
+        let update = document.getElementById("update_form");
+        update.submit();
+    }
 </script>
 <script type="text/javascript" src="{% static 'js/dimming.js' %}" defer></script>
 {% endblock %}
@@ -25,7 +28,7 @@
                 <form method="post" enctype="multipart/form-data" action="{% url 'dimming:index' %}">
                     {% csrf_token %}
                     <label class="file_ele">Choose CSV file(s) with plotting data:<br>
-                        <input type="file" class="file_ele" id="file_input" name="file_input" accept=".csv"
+                        <input type="file" class="find_ele" id="file_input" name="file_input" accept=".csv"
                             multiple></label><br>
                     <input type="submit" class="sub_button" value="Submit">
                 </form>
@@ -33,8 +36,9 @@
             <div id="file_other" class="selection_col_child col_right">
                 <form method="POST" action="{% url 'dimming:index' %}">
                     {% csrf_token %}
-                    <input type="submit" name="file_other" value="clear available files">
+                    <input type="submit" class="sub_button" name="file_other" value="clear available files">
                 </form>
+                <button class="sub_button" onclick="updateComm();">update graph</button>
             </div>
         </div>
 
@@ -45,13 +49,12 @@
         <div class="selection_col row_not_top">
             <div id="plot_selection" class="selection_col_child col_left">
                 <h2>Available files:</h2>
-                <form method="post" action="{% url 'dimming:index' %}">
+                <form method="post" action="{% url 'dimming:index' %}" id="update_form">
                     {% csrf_token %}
                     {% for file in csvfiles %}
                     <label><input type="checkbox" class="checkbox" name="check_files" value="{{ file }}">
                         {{ file }}</label><br>
                     {% endfor %}
-                    <input type="submit" class="sub_button" value="update graph">
             </div>
             <div id="limit_selection" class="selection_col_child col_right">
                 <h2>Available limitlines:</h2>
@@ -59,7 +62,6 @@
                 <label><input type="checkbox" class="checkbox" name="check_limits" value="{{ file }}">
                     {{ file }}</label><br>
                 {% endfor %}
-                <input type="submit" class="sub_button" value="update graph">
                 </form>
             </div>
         </div>

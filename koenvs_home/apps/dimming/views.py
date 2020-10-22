@@ -96,6 +96,7 @@ def dimmingIndex(request):
         fig.savefig(target_file)
         # file_form = UploadFileForm()
     elif request.method == "POST":
+        # print(request.POST)
         if ("check_files" in request.POST.keys()) or ("check_limits" in request.POST.keys()):
             requested_files = request.POST.getlist("check_files")
             requested_limits = request.POST.getlist("check_limits")

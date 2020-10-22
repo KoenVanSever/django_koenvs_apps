@@ -28,12 +28,29 @@
     margin-top: 2px;
     margin-bottom: 2px;
 }
+#file_entry form label input {
+    font: inherit;
+}
 .row_not_top { margin-top: 10px; height: calc(80% - 20px) }
 .row_top { height: 20%; }
 .col_left { margin-right: 5px; }
 .col_right { margin-left: 5px; }
-.sub_button { margin: 5px 0px 5px 5px; }
-.file_ele { margin: 5px; }
+.sub_button { 
+    margin: 5px 0px 5px 5px;
+    background-color: #004c5e;
+    color: white;
+    border-radius: 5px;
+    word-wrap: break-word;
+    border-color: gray;
+    position: relative;
+    width: 80%;
+    height: 1.5em;
+    font: inherit;
+}
+.sub_button:hover {
+    background-color: white;
+    color: gray;
+}
 
 #image_container { width: 800px; }
 #dimm_image { border-style: solid; border-color: #f49b01; border-width: 4px; border-radius: 25px; }
