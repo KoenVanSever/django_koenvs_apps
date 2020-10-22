@@ -136,7 +136,7 @@ function testMinimize() {
     console.log("new height is:", term.style.height)
 }
 
-document.querySelector(".args_row").addEventListener("click", testMinimize, false);
+document.querySelector("#term").addEventListener("click", testMinimize, false);
 
 // ACTIONS ON LOADING
 updateEntryData(ent)

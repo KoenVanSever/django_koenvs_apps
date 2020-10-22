@@ -11,6 +11,7 @@ from datetime import date
 
 # * STARTUP FUNCTIONS
 
+
 def get_init_pid():
     today = date.today().isocalendar()
     year = str(today[0])[-2:]
@@ -36,13 +37,13 @@ def gen_ports_list():
 _, ports_list = gen_ports_list()
 # TODO: clean this up
 temp = str(ports_list[0].split("-")[0]).rstrip()
-ser = Sfs(port = temp)  # /i MAIN SER OBJECT
+ser = Sfs(port=temp)  # /i MAIN SER OBJECT
 ser.close()  # /i close port by default when starting application
 start_port = ""
 if sys.platform == "linux":
     for temp in ports_list:
         if "USB" in temp:
-            start_port = temp 
+            start_port = temp
 else:
     start_port = ports_list[0]
 entry_data = {"arg1": 5, "arg2": 3, "conv": "HPC",
@@ -120,14 +121,15 @@ def render_ser_index(request):
     return render(request, "serial/index.html", {"entry_data": dumps(entry_data), "ser_ports": ports_list, "terminal_text": terminal_text})
 
 
-def hpc_fo_comm(hpc_comm, fo_comm, hpc_wait = 0.1, fo_wait = 0.1):
+def hpc_fo_comm(hpc_comm, fo_comm, hpc_wait=0.1, fo_wait=0.1):
     """ HPC and FO behavior is different for certain command """
     if entry_data["conv"] == "HPC":
         append_term(str(hpc_comm), float(hpc_wait))
     elif entry_data["conv"] == "FO/LCC":
         append_term(str(fo_comm), float(fo_wait))
     else:
-        terminal_text.append(prefix + "Command not send, please specify converter type")
+        terminal_text.append(
+            prefix + "Command not send, please specify converter type")
 
 
 def serialIndex(request):
@@ -136,18 +138,18 @@ def serialIndex(request):
 
     if request.method == "GET":
         if ser.is_open:
-            ser.reset_input_buffer() # ! necessary?
-        entry_data["command"] = "" # /i always reset command to nothing
-        entry_data["manual"] = False # /i always reset manual to False
+            ser.reset_input_buffer()  # ! necessary?
+        entry_data["command"] = ""  # /i always reset command to nothing
+        entry_data["manual"] = False  # /i always reset manual to False
         terminal_text = [""]
         return render_ser_index(request)
     elif request.method == "POST":
         if ser.is_open:
-            ser.reset_input_buffer() # ! necessary?
+            ser.reset_input_buffer()  # ! necessary?
         # TODO: help with shortened buffer time still gives issues on following command (input buffer still seems to have data?)
         entry_data = loads(request.POST["data"])
         manual_command_handle = entry_data["manual"]
-        entry_data["manual"] = False # /i always reset manual to False
+        entry_data["manual"] = False  # /i always reset manual to False
         print(entry_data)
         comm_proc = entry_data["command"]
         sel_port = entry_data["sel_port"].split("-")[0].rstrip()
@@ -202,9 +204,11 @@ def serialIndex(request):
                 elif comm_proc == "getccr":
                     hpc_fo_comm("getCCRcurrent", "getccr")
                 elif comm_proc == "calibccrlo 2000":
-                    hpc_fo_comm("calibCCRlo 2000", "calibccrlo 2000", 0.05, 1.1)
+                    hpc_fo_comm("calibCCRlo 2000",
+                                "calibccrlo 2000", 0.05, 1.1)
                 elif comm_proc == "calibccrhi 6600":
-                    hpc_fo_comm("calibCCRhi 6600", "calibccrlo 6600", 0.05, 1.1)
+                    hpc_fo_comm("calibCCRhi 6600",
+                                "calibccrlo 6600", 0.05, 1.1)
                 elif comm_proc == "calibccrsave":
                     hpc_fo_comm("calibCCRsave yes", "calibccrsave yes")
                 elif comm_proc == "getcalib":
@@ -213,7 +217,7 @@ def serialIndex(request):
                 # * led commands
                 elif comm_proc == "ledinfo":
                     sending = f"ledinfo {entry_data['arg1']} {entry_data['arg2']}"
-                    append_term(sending, 0.2)
+                    append_term(sending, 0.3)
                 elif comm_proc == "ledcalib":
                     # terminal_text.append("Not implemented yet")
                     # TODO: implement ledcalib correctly? --> TEST FUNCTIONALITY IN REAL LIFE (FO / HPC)
@@ -247,7 +251,7 @@ def serialIndex(request):
                 elif comm_proc == "setledovr2":
                     sending = f"setledovr2 {entry_data['arg1']} {entry_data['arg2']}"
                     append_term(sending)
-                
+
                 # * asp
                 elif comm_proc == "rx":
                     # TODO: implement rx functionality correctly --> timing of buffer? ploting results (in dialog)?
@@ -282,7 +286,8 @@ def serialIndex(request):
                     ser.close()
                     terminal_text.append("Port closed")
                 else:
-                    terminal_text.append("Opened port and selected port are different, please specify right port!")
+                    terminal_text.append(
+                        "Opened port and selected port are different, please specify right port!")
 
         # print(terminal_text)
         return render_ser_index(request)
@@ -291,21 +296,27 @@ def serialIndex(request):
 # ! UNDER DEVELOPMENT / TESTING
 # ! ---------------------------
 
+
 class TestDbListView(ListView):
     # model = Converter # /i not needed when you use queryset?
-    template_name = "serial/test_db.html" # /i this template is sought instead in template dirs, instead of the default one
-    context_object_name = "test_list" # /i this name can be used inside the template to cycle through or whatever (instead of default)
+    # /i this template is sought instead in template dirs, instead of the default one
+    template_name = "serial/test_db.html"
+    # /i this name can be used inside the template to cycle through or whatever (instead of default)
+    context_object_name = "test_list"
 
     def get_queryset(self):
         """ This returns a list of objects to our specification instead of default """
-        return (Converter.objects.all()) #pylint: disable=no-member
+        return (Converter.objects.all())  # pylint: disable=no-member
+
 
 def ConvExtraInfo(request, conv_id):
-    conv = get_object_or_404(Converter, pk = conv_id)
+    conv = get_object_or_404(Converter, pk=conv_id)
     try:
-        ledc = LedCalib.objects.filter(conv_id = conv.id) #pylint: disable=no-member
-        ccrc = CcrCalib.objects.filter(conv_id = conv.id) #pylint: disable=no-member
-    except (KeyError, LedCalib.DoesNotExist, CcrCalib.DoesNotExist): #pylint: disable=no-member
+        ledc = LedCalib.objects.filter(
+            conv_id=conv.id)  # pylint: disable=no-member
+        ccrc = CcrCalib.objects.filter(
+            conv_id=conv.id)  # pylint: disable=no-member
+    except (KeyError, LedCalib.DoesNotExist, CcrCalib.DoesNotExist):  # pylint: disable=no-member
         return render(request, "serial/conv_info.html", {"converter": conv, "error_message": "No LED calib or CCR calib information found"})
     else:
         return render(request, "serial/conv_info.html", {"converter": conv, "ledcalib": ledc, "ccrcalib": ccrc})
