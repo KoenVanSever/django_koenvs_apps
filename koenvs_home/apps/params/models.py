@@ -1,8 +1,17 @@
 from django.db import models
 from . import fields
+from pathlib import Path
 # from django.core.validators import MinValueValidator, MaxValueValidator
 
-# Create your models here.
+# * Help functions
+
+
+def split_2b(twobyte):
+    lsb = twobyte % 256
+    msb = twobyte // 256
+    return [str(lsb), str(msb)]
+
+# * Create your models here.
 
 
 class Parameter(models.Model):
@@ -37,11 +46,11 @@ class Parameter(models.Model):
     # ! nominal_voltage_1b * 100 mV
     nominal_current_2b = fields.TwoByteField()  # - byte 137 (LSB), byte 138 (MSB)
     number_of_leds_1b = fields.OneByteField()  # - byte 145
-    led_revision_1b = fields.OneByteField()  # - byte 146
+    led_revision_1b = fields.OneByteField(default=0)  # - byte 146
     # ! LED revision 0: shortLED not mounted, LED revision 1: shortLED mounted
     min_lin_dim_2b = fields.TwoByteField(
         default=300)  # - byte 202 (LSB), byte 203 (MSB)
-    analog_dim_freq_2b = fields.TwoByteField(
+    digital_dim_freq_2b = fields.TwoByteField(
         default=610)  # - byte 204 (LSB), byte 205 (MSB)
     min_on_time_2b = fields.TwoByteField()  # - byte 208 (LSB), byte 209 (MSB)
     # ! used in real life? meant for HPC according to docs?
@@ -54,7 +63,7 @@ class Parameter(models.Model):
 
     # /i dimming curve paramters
     dimming_curve_14_2b = fields.TwoByteField()  # - byte 147 (LSB), byte 148 (MSB)
-    dimming_curve_27_2b = fields.TwoByteField()  # - byte 149 (LSB), byte 150 (MSB)
+    dimming_curve_28_2b = fields.TwoByteField()  # - byte 149 (LSB), byte 150 (MSB)
     dimming_curve_34_2b = fields.TwoByteField()  # - byte 151 (LSB), byte 152 (MSB)
     dimming_curve_41_2b = fields.TwoByteField()  # - byte 153 (LSB), byte 154 (MSB)
     dimming_curve_48_2b = fields.TwoByteField()  # - byte 155 (LSB), byte 156 (MSB)
@@ -75,14 +84,14 @@ class Parameter(models.Model):
     ak_power_2window_1b = fields.OneByteField()  # - byte 214
 
     # /i release info parameters
-    rel_year_1b = fields.OneByteField(default=20)  # - byte 171
-    rel_week_1b = fields.OneByteField(default=43)  # - byte 172
-    rel_ver_1b = fields.OneByteField(default=1)  # - byte 173
-    rel_not_used_1b = fields.OneByteField(default=0)  # - byte 174
-    inv_rel_year_1b = fields.OneByteField(default=235)  # - byte 171
-    inv_rel_week_1b = fields.OneByteField(default=212)  # - byte 172
-    inv_rel_ver_1b = fields.OneByteField(default=254)  # - byte 173
-    inv_rel_not_used_1b = fields.OneByteField(default=255)  # - byte 174
+    rel_year_1b = fields.OneByteField(default=20)  # - byte 128
+    rel_week_1b = fields.OneByteField(default=43)  # - byte 129
+    rel_ver_1b = fields.OneByteField(default=1)  # - byte 130
+    rel_not_used_1b = fields.OneByteField(default=0)  # - byte 131
+    inv_rel_year_1b = fields.OneByteField(default=235)  # - byte 132
+    inv_rel_week_1b = fields.OneByteField(default=212)  # - byte 133
+    inv_rel_ver_1b = fields.OneByteField(default=254)  # - byte 134
+    inv_rel_not_used_1b = fields.OneByteField(default=255)  # - byte 135
     # ! default to moment of making this file, just for fucking fun
 
     # /i programming data parameters
@@ -128,3 +137,79 @@ class Parameter(models.Model):
     length_block1_1b = fields.OneByteField(default=18)  # - byte 201
     vf_short_threshold_fast = fields.OneByteField()  # - byte 206
     vf_short_threshold_slow = fields.OneByteField()  # - byte 207
+
+    def update_dimming_curve(self, dimlist):
+        self.dimming_curve_14_2b = dimlist[0]
+        self.dimming_curve_28_2b = dimlist[1]
+        self.dimming_curve_34_2b = dimlist[2]
+        self.dimming_curve_41_2b = dimlist[3]
+        self.dimming_curve_48_2b = dimlist[4]
+        self.dimming_curve_52_2b = dimlist[5]
+        self.dimming_curve_55_2b = dimlist[6]
+        self.dimming_curve_66_2b = dimlist[7]
+
+    @property
+    def dimming_curve(self):
+        ret = [self.dimming_curve_14_2b, self.dimming_curve_28_2b, self.dimming_curve_34_2b, self.dimming_curve_41_2b,
+               self.dimming_curve_48_2b, self.dimming_curve_52_2b, self.dimming_curve_55_2b, self.dimming_curve_66_2b]
+        return ret
+
+    def update_full_flux(self, flux):
+        self.flux_comp_m25_1b = flux
+        self.flux_comp_0_1b = flux
+        self.flux_comp_25_1b = flux
+        self.flux_comp_50_1b = flux
+        self.flux_comp_75_1b = flux
+        self.flux_comp_max_1b = flux
+
+    @property
+    def flux_analysis(self):
+        ret = self.flux_comp_m25_1b if self.flux_comp_m25_1b == self.flux_comp_0_1b == self.flux_comp_25_1b == self.flux_comp_50_1b == self.flux_comp_75_1b == self.flux_comp_max_1b else "Varying!"
+        return ret
+
+    def update_nominal_voltage(self, volt):
+        """ volt is in (V) unit, whether to use 1 byte field or 2 byte field is autodetected """
+        if volt <= 25.5:
+            self.nominal_voltage_1b = round(volt * 10)
+            self.nominal_voltage_2b = 65535
+        else:
+            self.nominal_voltage_1b = 255
+            self.nominal_voltage_2b = round(volt * 100)
+
+    @property
+    def real_nom_voltage(self):
+        if self.nominal_voltage_2b == 65535:
+            return self.nominal_voltage_1b / 10
+        else:
+            return self.nominal_voltage_2b / 100
+
+    def _get_full_file(self):
+        release_info = [self.rel_year_1b, self.rel_week_1b, self.rel_ver_1b, self.rel_not_used_1b,
+                        self.inv_rel_year_1b, self.inv_rel_week_1b, self.inv_rel_ver_1b, self.inv_rel_not_used_1b]
+        dimming_curve = split_2b(self.dimming_curve_14_2b) + split_2b(self.dimming_curve_28_2b) + split_2b(self.dimming_curve_34_2b) + split_2b(self.dimming_curve_41_2b) + \
+            split_2b(self.dimming_curve_48_2b) + split_2b(self.dimming_curve_52_2b) + \
+            split_2b(self.dimming_curve_55_2b) + \
+            split_2b(self.dimming_curve_66_2b)
+        flux_comp = [self.flux_comp_m25_1b, self.flux_comp_0_1b, self.flux_comp_25_1b,
+                     self.flux_comp_50_1b, self.flux_comp_75_1b, self.flux_comp_max_1b]
+        programming_date = [self.year_1b,
+                            self.month_1b, self.day_1b, self.hour_1b]
+        depr1 = split_2b(self.led_pwm_l1_b2) + split_2b(self.led_pwm_l2_b2) + split_2b(self.led_pwm_l3_b2) + \
+            split_2b(self.led_pwm_l4_b2) + split_2b(self.led_pwm_l5_b2) + \
+            split_2b(self.led_pwm_l6_b2)
+        depr2 = split_2b(self.u_led_vl1_b2) + split_2b(self.u_led_vl2_b2) + split_2b(self.u_led_vl3_b2) + \
+            split_2b(self.u_led_vl4_b2) + split_2b(self.u_led_vl5_b2) + \
+            split_2b(self.u_led_vl6_b2)
+        full = [self.short_name] + [255] * 128 + release_info + [self.type_1b] + split_2b(self.nominal_current_2b) + [self.nominal_voltage_1b] + [self.thermal_resistance_1b] + [self.max_junction_temp_1b] + [
+            self.flux_bin_info_1b] + [self.color_1b] + [self.fitting_type_1b] + [self.number_of_leds_1b] + [self.led_revision_1b] + dimming_curve + flux_comp + split_2b(self.reserved_version_2b) + programming_date + depr1 + depr2 + split_2b(self.crc_2b) + [self.length_block1_1b] + split_2b(self.min_lin_dim_2b) + split_2b(self.digital_dim_freq_2b) + [
+            self.vf_short_threshold_fast] + [self.vf_short_threshold_slow] + split_2b(self.min_on_time_2b) + split_2b(self.nominal_voltage_2b) + [self.load_type_1b] + [self.ak_power_1window_1b] + [self.ak_power_2window_1b] + [self.dual_mon_1b] + [255] * 40
+        return full
+
+    def create_file(self, target_dir):
+        output = [str(e) for e in self._get_full_file()]
+        with open(Path(target_dir, self.csv_name), "w") as f:
+            f.write(",".join(output))
+            f.write("\n")
+
+    def __str__(self):
+        return self.short_name

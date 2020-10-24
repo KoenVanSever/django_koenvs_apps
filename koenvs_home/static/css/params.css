@@ -1,0 +1,29 @@
+.main_div {
+    width: 95%;
+    margin-left: auto;
+    margin-right: auto;
+    align-content: flex-start;
+    height: 100%;
+}
+#control_div { height: 20%; justify-content: flex-start;}
+#table_div { height: 80%; }
+table { border-collapse: collapse; width: 100%; }
+th, td { 
+    padding: 5px;
+    border: 1px solid gray;
+    font: 1em "Arial", sans-serif;
+    text-align: center;
+    line-height: 1em;
+}
+td > button { 
+    background-color: lightgreen;
+    color: white;
+    border-color: gray;
+    height: 1.5em;
+    border-radius: 5px;
+}
+td > button:hover { background-color: white; color: gray; border-color: gray;}
+#info_row th { column-width: 5%; }
+tr > th { background-color: rgb(4, 87, 105); color: white; }
+tbody > tr { color: gray; }
+tbody > tr:hover { background-color: #f49b01;}
