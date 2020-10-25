@@ -3,6 +3,7 @@
 {% block head %}
 <title>KoenVS - Params Detail</title>
 {% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/params_detail.css' %}">
 {% endblock %}
 
 {% block header %}
@@ -12,11 +13,11 @@
 {% endblock %}
 
 {% block main %}
-<ul>
+<div id="main_div">
     {% for line in param %}
-    <li>{{ line.0 }} on {{ line.1 }}: <input type="text" size="1" value="{{ line.2 }}"></li>
+    <div class="param">{{ line.0 }} on {{ line.1 }}: <input type="text" size="1" value="{{ line.2 }}"></div>
     {% endfor %}
-</ul>
+</div>
 
 {% endblock%}
 
