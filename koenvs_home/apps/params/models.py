@@ -11,11 +11,17 @@ def split_2b(twobyte):
     msb = twobyte // 256
     return [str(lsb), str(msb)]
 
+
+def merge_2b(lsb, msb):
+    twobyte = int(lsb) + 256 * int(msb)
+    return twobyte
+
+
 # * Create your models here.
 
 
 class Parameter(models.Model):
-    """ 
+    """
         Non integer information:
         - short_name: short name for the parameter file (max_length = 50)
         - csv_name: file name of the csv file (max_length = 60)
@@ -28,6 +34,27 @@ class Parameter(models.Model):
         - Bytes 216-255: all 0xFF
         * SIDENOTE/TODO on last block -> 220-221 found to be populated: WHAT IS THIS?
     """
+
+    @classmethod
+    def upload_data(cls, path, category=None):
+        with open(path) as f:
+            lines = f.readlines()
+        data = []
+        for l in lines:
+            if ";" in l:
+                if len(l.split(";")) == 257:
+                    data = l.split(";")
+        if type(data) == list and len(data) == 257:
+            temp = cls()
+            temp.csv_name = path.name
+            temp.short_name = data[0]
+            temp.category = category
+            del data[0]
+            data = list(map(lambda x: int(x), data))
+            temp._load_params_from_256_list(data)
+            return temp
+        else:
+            raise AttributeError("data parsed is not right format")
 
     # * NON INTEGER FIELDS
     short_name = models.CharField(max_length=50, default="default")
@@ -213,3 +240,9 @@ class Parameter(models.Model):
 
     def __str__(self):
         return self.short_name
+
+    def _load_params_from_256_list(self, l):
+        self.rel_year_1b = l[128]
+        self.rel_month_1b = l[129]
+        self.rel_week_1b = l[130]
+        self.rel_not_used_1b = l[131]

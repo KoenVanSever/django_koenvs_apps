@@ -4,3 +4,6 @@ pandas
 pyserial
 pylint
 autopep8
+django-extensions
+ipython
+notebook

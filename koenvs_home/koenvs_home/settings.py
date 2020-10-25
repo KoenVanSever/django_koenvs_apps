@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django_matplotlib'
+    'django_matplotlib',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [
@@ -152,3 +153,10 @@ STATICFILES_DIRS = [
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # /i media url: where are media stored
 MEDIA_URL = '/media/'
+
+# /i improve shell
+SHELL_PLUS = 'ipython'
+
+IPYTHON_ARGUMENTS = [
+    '--ext', 'autoreload',
+]
