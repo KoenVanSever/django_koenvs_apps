@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>KoenVS - Params Detail</title>
+{% load static %}
+{% endblock %}
+
+{% block header %}
+<div id="header_title_container">
+    <h1>Params</h1>
+</div>
+{% endblock %}
+
+{% block main %}
+<ul>
+    {% for line in param %}
+    <li>{{ line.0 }} on {{ line.1 }}: <input type="text" size="1" value="{{ line.2 }}"></li>
+    {% endfor %}
+</ul>
+
+{% endblock%}
+
+{% block footer %}
+
+{% endblock%}

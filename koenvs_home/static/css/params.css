@@ -3,10 +3,22 @@
     margin-left: auto;
     margin-right: auto;
     align-content: flex-start;
-    height: 100%;
+    height: calc(100% - 30px);
 }
-#control_div { height: 20%; justify-content: flex-start;}
+#control_div { height: 20%; justify-content: flex-start; }
+#upload { 
+    height: calc(100% - 10px - 20px);
+    margin: 5px 0px 5px 0px;
+    width: 20%;
+    padding: 10px;
+    border-radius: 5px;
+    border-style: solid;
+    border-width: 3px;
+    border-color: #f49b01;
+}
+#input_form > p { margin: 2px; color: #ee3243; }
 #table_div { height: 80%; }
+#body { overflow-y: auto; height: calc(100% - 54px); scrollbar-width: none; }
 table { border-collapse: collapse; width: 100%; }
 th, td { 
     padding: 5px;
@@ -15,15 +27,20 @@ th, td {
     text-align: center;
     line-height: 1em;
 }
-td > button { 
+.detail_but { 
     background-color: lightgreen;
     color: white;
     border-color: gray;
     height: 1.5em;
     border-radius: 5px;
 }
-td > button:hover { background-color: white; color: gray; border-color: gray;}
-#info_row th { column-width: 5%; }
+.detail_but:hover { background-color: white; color: gray; border-color: gray;}
+.csv { width: 25%; overflow-x: hidden; }
+.cat { width: 5%; }
+.led { width: 5%; }
+.dim { width: 5%; }
+.det { width: 5%; }
+td.csv { text-align: left; }
 tr > th { background-color: rgb(4, 87, 105); color: white; }
 tbody > tr { color: gray; }
 tbody > tr:hover { background-color: #f49b01;}

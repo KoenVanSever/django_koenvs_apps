@@ -7,3 +7,4 @@ autopep8
 django-extensions
 ipython
 notebook
+pylint-django

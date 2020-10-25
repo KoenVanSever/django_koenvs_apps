@@ -4,6 +4,8 @@
 <title>KoenVS - Params</title>
 {% load static %}
 <link rel="stylesheet" type="text/css" href="{% static 'css/params.css' %}">
+<script type="text/javascript" defer>
+</script>
 {% endblock %}
 
 {% block header %}
@@ -16,8 +18,12 @@
 <div class="main_div">
     <div id="control_div">
         <div id="upload">
-            <form>
-                {% crsf_token %}
+            <form id="input_form" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <label>Category: <input type="text" size="5" name="category"></label>
+                <input type="file" name="files_upload" accept=".csv" multiple>
+                <input type="submit" value="Submit file(s)">
+                <p>{{ input_message }}</p>
             </form>
         </div>
         <div>
@@ -29,68 +35,76 @@
             <thead>
                 <tr>
                     <th colspan="2">Basic info</th>
-                    <th colspan="3">General LED info</th>
+                    <th colspan="4">General LED info</th>
                     <th colspan="9">Dimming Curve / Flux info</th>
                     <!-- <th colspan="2">Driver info</th> -->
-                    <th rowspan="2">Detail</th>
+                    <th class="det" rowspan="2">Detail</th>
                 </tr>
-                <tr id="info_row">
+                <tr>
                     <!-- General information -->
                     <!-- <th class="id">ID</th> -->
                     <!-- <th>Short name</th> -->
-                    <th>CSV name</th>
-                    <th>Category</th>
+                    <th class="csv">CSV name</th>
+                    <th class="cat">Category</th>
                     <!-- LED information -->
-                    <th>Forw Volt (V)</th>
-                    <th>Nom Curr (mA)</th>
-                    <th># of LEDs</th>
+                    <th class="led">Vf (V)</th>
+                    <th class="led">Curr (mA)</th>
+                    <th class="led"># LEDs</th>
+                    <th class="led">Adim (mA)</th>
+                    <!-- <th>Digital dim (Hz)</th> -->
                     <!-- <th>LED Rev</th> -->
                     <!-- <th>Load Type</th> -->
                     <!-- Dimming curve / flux information-->
-                    <th>1.4A (mA)</th>
-                    <th>2.8A (mA)</th>
-                    <th>3.4A (mA)</th>
-                    <th>4.1A (mA)</th>
-                    <th>4.8A (mA)</th>
-                    <th>5.2A (mA)</th>
-                    <th>5.5A (mA)</th>
-                    <th>6.6A (mA)</th>
-                    <th>Flux (%)</th>
-                    <!-- Driver setup -->
-                    <!-- <th>Analog dim (mA)</th> -->
-                    <!-- <th>Digital dim (Hz)</th> -->
+                    <th class="dim">1.4A (mA)</th>
+                    <th class="dim">2.8A (mA)</th>
+                    <th class="dim">3.4A (mA)</th>
+                    <th class="dim">4.1A (mA)</th>
+                    <th class="dim">4.8A (mA)</th>
+                    <th class="dim">5.2A (mA)</th>
+                    <th class="dim">5.5A (mA)</th>
+                    <th class="dim">6.6A (mA)</th>
+                    <th class="dim">Flux (%)</th>
                 </tr>
             </thead>
-            <tbody>
-                {% for param in parameter_list %}
-                <tr>
-                    <!-- General information -->
-                    <!-- <td class="id">{{param.id}}</td> -->
-                    <!-- <td>{{param.short_name}}</td> -->
-                    <td>{{param.csv_name}}</td>
-                    <td>{{param.category}}</td>
-                    <!-- LED information -->
-                    <td>{{param.real_nom_voltage}}</td>
-                    <td>{{param.nominal_current_2b}}</td>
-                    <td>{{param.number_of_leds_1b}}</td>
-                    <!-- <td>{{param.led_revision_1b}}</td> -->
-                    <!-- <td>{{param.load_type_1b}}</td> -->
-                    <!-- Dimming curve -->
-                    {% for dim in param.dimming_curve %}
-                    <td>{{dim}}</td>
-                    {% endfor %}
-                    <td>{{param.flux_analysis}}</td>
-                    <!-- Driver setup -->
-                    <!-- <td>{{param.min_lin_dim_2b}}</td> -->
-                    <!-- <td>{{param.digital_dim_freq_2b}}</td> -->
-                    <!-- Detail button -->
-                    <td><button>Detail</button></td>
-                </tr>
-                {% empty %}
-                <p>No parameter files found in database</p>
-                {% endfor %}
-            </tbody>
         </table>
+        <div id="body">
+            <table>
+                <tbody>
+                    {% for param in parameter_list %}
+                    <tr>
+                        <!-- General information -->
+                        <!-- <td class="id">{{param.id}}</td> -->
+                        <!-- <td>{{param.short_name}}</td> -->
+                        <td class="csv">{{param.csv_name}}</td>
+                        <td class="cat">{{param.category}}</td>
+                        <!-- LED information -->
+                        <td class="led">{{param.real_nom_voltage}}</td>
+                        <td class="led">{{param.nominal_current_2b}}</td>
+                        <td class="led">{{param.number_of_leds_1b}}</td>
+                        <td class="led">{{param.min_lin_dim_2b}}</td>
+                        <!-- <td>{{param.digital_dim_freq_2b}}</td> -->
+                        <!-- <td>{{param.led_revision_1b}}</td> -->
+                        <!-- <td>{{param.load_type_1b}}</td> -->
+                        <!-- Dimming curve -->
+                        {% for dim in param.dimming_curve %}
+                        <td class="dim">{{dim}}</td>
+                        {% endfor %}
+                        <td class="dim">{{param.flux_analysis}}</td>
+                        <!-- Detail button -->
+                        <td class="det">
+                            <form method="post" action="{% url 'params:detail' param.id %}">
+                                {% csrf_token %}
+                                <input class="detail_but" type="submit" value="detail">
+                            </form>
+                        </td>
+                    </tr>
+
+                    {% empty %}
+                    <p>No parameter files found in database</p>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 {% endblock%}
