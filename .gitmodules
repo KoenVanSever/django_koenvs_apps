@@ -1,0 +1,3 @@
+[submodule "koenvs_home/static/lib"]
+	path = koenvs_home/static/lib
+	url = https://github.com/KoenVanSever/lib.git

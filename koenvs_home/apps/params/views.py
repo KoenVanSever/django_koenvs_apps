@@ -5,6 +5,17 @@ from .models import Parameter
 CAT_CHOICES = [x[0] for x in Parameter.cat_choices] + [""]
 
 
+def split_tuples(tuples, amount):
+    split = []
+    for x in range(len(tuples)):
+        mod = x % amount
+        li = x // amount
+        if mod == 0:
+            split.append([])
+        split[li].append(tuples[x])
+    return split
+
+
 def paramsIndex(request):
     """ Dipslays self made index page for params application """
     parameter_list = Parameter.objects.all().order_by(
@@ -29,7 +40,11 @@ def paramsDetail(request, param_id):
     if request.method == "GET":
         return redirect("/params/", permanent=True)
     elif request.method == "POST":
+        main_height = int(request.POST["height"]) - 72
+        print(main_height)
+        rows = main_height // 44
+        print(rows)
         obj = Parameter.objects.get(pk=param_id)
         tuples = obj.get_three_way_tuple()
-        print(tuples)
-        return render(request, "params/detail.html", {"param": tuples})
+        split = split_tuples(tuples, rows)
+        return render(request, "params/detail.html", {"split": split})

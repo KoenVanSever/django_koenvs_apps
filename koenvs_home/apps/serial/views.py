@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from django.views.generic.list import ListView
 from .models import Converter, LedCalib, CcrCalib
 from django.http import HttpResponse
-from static.my_modules.safeserial import SafeSerial as Sfs  # pylint: disable=import-error
+from static.lib.pylib.safeserial import SafeSerial as Sfs  # pylint: disable=import-error
 from json import dumps, dump, loads
 import serial.tools.list_ports as stl  # pylint: disable=import-error disable=no-name-in-module
 from time import sleep

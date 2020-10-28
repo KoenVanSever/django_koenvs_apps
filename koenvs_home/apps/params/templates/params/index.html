@@ -4,8 +4,6 @@
 <title>KoenVS - Params</title>
 {% load static %}
 <link rel="stylesheet" type="text/css" href="{% static 'css/params.css' %}">
-<script type="text/javascript" defer>
-</script>
 {% endblock %}
 
 {% block header %}
@@ -94,6 +92,7 @@
                         <td class="det">
                             <form method="post" action="{% url 'params:detail' param.id %}">
                                 {% csrf_token %}
+                                <input id="height" type="text" name="height" value="" hidden>
                                 <input class="detail_but" type="submit" value="detail">
                             </form>
                         </td>
@@ -112,3 +111,15 @@
 {% block footer %}
 
 {% endblock%}
+
+{% block scriptend %}
+<script type="text/javascript">
+    let main = document.querySelector("main");
+    let heightMain = main.clientHeight;
+    let widthMain = main.clientWidth;
+    let targets = document.querySelectorAll("#height");
+    targets.forEach(sel => {
+        sel.setAttribute("value", heightMain);
+    });
+</script>
+{% endblock %}

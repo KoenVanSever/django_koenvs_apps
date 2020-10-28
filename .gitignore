@@ -3,3 +3,4 @@
 djangoenv/
 *.pyc
 django/
+**/.vscode
