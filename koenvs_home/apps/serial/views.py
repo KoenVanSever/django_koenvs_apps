@@ -36,7 +36,8 @@ def gen_ports_list():
 
 _, ports_list = gen_ports_list()
 # TODO: clean this up
-temp = str(ports_list[0].split("-")[0]).rstrip()
+temp = str(ports_list[0].split("-")[0]
+           ).rstrip() if len(ports_list) >= 1 else None
 ser = Sfs(port=temp)  # /i MAIN SER OBJECT
 ser.close()  # /i close port by default when starting application
 start_port = ""

@@ -10,6 +10,42 @@
 #control {
     height: 50px;
     margin: 5px 0px 5px 0px;
+    display: flex;
+    align-items: center;
+    width: 99%;
+    background-color: gray;
+    border-radius: 5px;
+    color: white;
+}
+
+#control form {
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+#control button {
+    width: 150px;
+    background-color: #ff4242;
+    height: 35px;
+    border: 1px solid white;
+    color: white;
+    margin-right: 10px;
+}
+
+#control button:hover {
+    background-color: white;
+    border-color: #ff4242;
+    color: #ff4242;
+}
+
+#control form p {
+    margin-left: 10px;
+    color: white;
+}
+
+#control form input[type="text"] {
+    height: 35px;
 }
 #show {
     display: flex;
@@ -27,5 +63,7 @@
     display: grid;
     grid-template-columns: 200px 75px;
 }
+.param input[type="text"] { height: 32px; }
+
 .param_label { align-self: center; }
 /* .param_input { float: right; } */

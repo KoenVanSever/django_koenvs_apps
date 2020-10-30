@@ -4,6 +4,7 @@
 <title>KoenVS - Params Detail</title>
 {% load static %}
 <link rel="stylesheet" type="text/css" href="{% static 'css/params_detail.css' %}">
+<script type="text/javascript" src="{% static 'js/params_detail.js' %}" defer></script>
 {% endblock %}
 
 {% block header %}
@@ -15,7 +16,20 @@
 {% block main %}
 <div id="main_div">
     <div id="control">
-        PUT CODE TO SAVE --> CHANGE SQL DB
+        <form method="post" id="form_control" action="{% url 'params:detail' param_id %}">
+            {% csrf_token %}
+            <label>&nbsp;CSV name: <input type="text" id="csv_entry" size="20" name="csv_entry"
+                    value="{{ text_info.csv_name }}"></label>
+            <label>&nbsp;Short name: <input type="text" id="short_entry" size="20" name="short_entry"
+                    value="{{ text_info.short_name }}"></label>
+            <label>&nbsp;Category: <input type="text" id="cat_entry" size="1" name="cat_entry"
+                    value="{{ text_info.category }}"></label>
+            <input type="text" hidden id="data" name="data" value="">
+            <input id="export" type="text" hidden name="export" value="data">
+            <p><b>{{ process_message }}</b></p>
+        </form>
+        <button id="csv_exp">Export to CSV</button>
+        <button id="db_update">Save to DB</button>
     </div>
     <div id="show">
         {% for s in split %}
@@ -38,3 +52,20 @@
 {% block footer %}
 
 {% endblock%}
+
+{% block scriptend %}
+<script defer>
+    let updateDB = document.querySelector("#db_update");
+    let exportCSV = document.querySelector("#csv_exp");
+    updateDB.addEventListener("click", () => {
+        document.querySelector("#data").setAttribute("value", JSON.stringify(getData()));
+        console.log("pressed");
+        document.querySelector("#form_control").submit();
+    });
+    exportCSV.addEventListener("click", () => {
+        document.querySelector("#data").setAttribute("value", JSON.stringify(getData()));
+        document.querySelector("#export").value = "export_csv";
+        document.querySelector("#form_control").submit();
+    })
+</script>
+{% endblock %}

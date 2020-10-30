@@ -2,6 +2,7 @@
     "python.linting.pylintArgs": [
         "--load-plugins=pylint_django",
         "--disable=fixme",
-        "--disable=missing-function-docstring"
+        "--disable=missing-function-docstring",
+        "--disable=global-statement"
     ],
 }

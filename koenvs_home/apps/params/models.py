@@ -75,7 +75,8 @@ class Parameter(models.Model):
 
     # * NON INTEGER FIELDS
     short_name = models.CharField(max_length=50, default="default")
-    csv_name = models.CharField(max_length=60, default="default.csv")
+    csv_name = models.CharField(
+        max_length=60, default="default.csv", unique=True)
     cat_choices = [
         ("OMNI", "Omnidirectional range application"),
         ("SL", "SafeLED application"),
@@ -251,9 +252,11 @@ class Parameter(models.Model):
 
     def create_file(self, target_dir):
         output = [str(e) for e in self._get_full_file()]
-        with open(Path(target_dir, self.csv_name), "w") as f:
+        full_path = Path(target_dir, self.csv_name).resolve()
+        with open(full_path, "w") as f:
             f.write(",".join(output))
             f.write("\n")
+        return full_path
 
     def get_relevent_list(self):
         temp = [int(e) for e in self._get_full_file()[129:217]]
@@ -340,40 +343,26 @@ class Parameter(models.Model):
         ret.append(("Rel year inv", "132", self.inv_rel_year_1b))
         ret.append(("Rel week inv", "133", self.inv_rel_week_1b))
         ret.append(("Rel version inv", "134", self.inv_rel_ver_1b))
-        ret.append(("Rel not used inv",
-                    "135", self.inv_rel_not_used_1b))
+        ret.append(("Rel not used inv", "135", self.inv_rel_not_used_1b))
         ret.append(("Type", "136", self.type_1b))
-        ret.append(("Nom current (mA)", "137 & 138",
-                    self.nominal_current_2b))
-        ret.append(("Nom voltage (V) (1b)",
-                    "139", self.nominal_voltage_1b))
-        ret.append(("Therm res (°C/W)",
-                    "140", self.thermal_resistance_1b))
-        ret.append(("Max junc temp (°C)", "141",
-                    self.max_junction_temp_1b))
+        ret.append(("Nom current (mA)", "137 & 138", self.nominal_current_2b))
+        ret.append(("Nom voltage (V) (1b)", "139", self.nominal_voltage_1b))
+        ret.append(("Therm res (°C/W)", "140", self.thermal_resistance_1b))
+        ret.append(("Max junc temp (°C)", "141", self.max_junction_temp_1b))
         ret.append(("Flux bin info", "142", self.flux_bin_info_1b))
         ret.append(("Color", "143", self.color_1b))
         ret.append(("Fitting type", "144", self.fitting_type_1b))
         ret.append(("Number of LEDs", "145", self.number_of_leds_1b))
         ret.append(("LED revision", "146", self.led_revision_1b))
-        ret.append(("DC 1.4A (mA)",
-                    "147 & 148", self.dimming_curve_14_2b))
-        ret.append(("DC 2.8A (mA)",
-                    "149 & 150", self.dimming_curve_28_2b))
-        ret.append(("DC 3.4A (mA)",
-                    "151 & 152", self.dimming_curve_34_2b))
-        ret.append(("DC 4.1A (mA)",
-                    "153 & 154", self.dimming_curve_41_2b))
-        ret.append(("DC 4.8A (mA)",
-                    "155 & 156", self.dimming_curve_48_2b))
-        ret.append(("DC 5.2A (mA)",
-                    "157 & 158", self.dimming_curve_52_2b))
-        ret.append(("DC 5.5A (mA)",
-                    "159 & 160", self.dimming_curve_55_2b))
-        ret.append(("DC 6.6A (mA)",
-                    "161 & 162", self.dimming_curve_66_2b))
-        ret.append(("Flux comp -25°C (%)",
-                    "163", self.flux_comp_m25_1b))
+        ret.append(("DC 1.4A (mA)", "147 & 148", self.dimming_curve_14_2b))
+        ret.append(("DC 2.8A (mA)", "149 & 150", self.dimming_curve_28_2b))
+        ret.append(("DC 3.4A (mA)", "151 & 152", self.dimming_curve_34_2b))
+        ret.append(("DC 4.1A (mA)", "153 & 154", self.dimming_curve_41_2b))
+        ret.append(("DC 4.8A (mA)", "155 & 156", self.dimming_curve_48_2b))
+        ret.append(("DC 5.2A (mA)", "157 & 158", self.dimming_curve_52_2b))
+        ret.append(("DC 5.5A (mA)", "159 & 160", self.dimming_curve_55_2b))
+        ret.append(("DC 6.6A (mA)", "161 & 162", self.dimming_curve_66_2b))
+        ret.append(("Flux comp m25°C (%)", "163", self.flux_comp_m25_1b))
         ret.append(("Flux comp 0°C (%)", "164", self.flux_comp_0_1b))
         ret.append(("Flux comp 25°C (%)", "165", self.flux_comp_25_1b))
         ret.append(("Flux comp 50°C (%)", "166", self.flux_comp_50_1b))
@@ -398,17 +387,77 @@ class Parameter(models.Model):
         ret.append(("U LED level 6", "197 & 198", self.u_led_vl6_b2))
         ret.append(("CRC", "199 & 200", self.crc_2b))
         ret.append(("Length block 1", "201", self.length_block1_1b))
-        ret.append(("Min lin dim (mA)",
-                    "202 & 203", self.min_lin_dim_2b))
-        ret.append(("Dig dim freq (Hz)",
-                    "204 & 205", self.digital_dim_freq_2b))
+        ret.append(("Min lin dim (mA)", "202 & 203", self.min_lin_dim_2b))
+        ret.append(("Dig dim freq (Hz)", "204 & 205", self.digital_dim_freq_2b))
         ret.append(("Vf treshold fast", "206", self.vf_short_threshold_fast))
         ret.append(("Vf threshold slow", "207", self.vf_short_threshold_slow))
         ret.append(("Min on time (ns)", "208 & 209", self.min_on_time_2b))
-        ret.append(("Nom voltage (V)", "210 & 211",
-                    self.nominal_voltage_2b))
+        ret.append(("Nom voltage (V)", "210 & 211", self.nominal_voltage_2b))
         ret.append(("Load type", "212", self.load_type_1b))
         ret.append(("AK power 1 win (W)", "213", self.ak_power_1window_1b))
         ret.append(("AK power 2 win (W)", "214", self.ak_power_2window_1b))
         ret.append(("Dual monitoring", "215", self.dual_mon_1b))
         return ret
+
+    def update_data_without_save(self, update):
+        self.rel_year_1b = update["Relyear"]
+        self.rel_week_1b = update["Relweek"]
+        self.rel_ver_1b = update["Relversion"]
+        self.rel_not_used_1b = update["Relnotused"]
+        self.inv_rel_year_1b = update["Relyearinv"]
+        self.inv_rel_week_1b = update["Relweekinv"]
+        self.inv_rel_ver_1b = update["Relversioninv"]
+        self.inv_rel_not_used_1b = update["Relnotusedinv"]
+        self.type_1b = update["Type"]
+        self.nominal_current_2b = update["NomcurrentmA"]
+        self.nominal_voltage_1b = update["NomvoltageV1b"]
+        self.thermal_resistance_1b = update["ThermresCW"]
+        self.max_junction_temp_1b = update["MaxjunctempC"]
+        self.flux_bin_info_1b = update["Fluxbininfo"]
+        self.color_1b = update["Color"]
+        self.fitting_type_1b = update["Fittingtype"]
+        self.number_of_leds_1b = update["NumberofLEDs"]
+        self.led_revision_1b = update["LEDrevision"]
+        self.dimming_curve_14_2b = update["DC14AmA"]
+        self.dimming_curve_28_2b = update["DC28AmA"]
+        self.dimming_curve_34_2b = update["DC34AmA"]
+        self.dimming_curve_41_2b = update["DC41AmA"]
+        self.dimming_curve_48_2b = update["DC48AmA"]
+        self.dimming_curve_52_2b = update["DC52AmA"]
+        self.dimming_curve_55_2b = update["DC55AmA"]
+        self.dimming_curve_66_2b = update["DC66AmA"]
+        self.flux_comp_m25_1b = update["Fluxcompm25C"]
+        self.flux_comp_0_1b = update["Fluxcomp0C"]
+        self.flux_comp_25_1b = update["Fluxcomp25C"]
+        self.flux_comp_50_1b = update["Fluxcomp50C"]
+        self.flux_comp_75_1b = update["Fluxcomp75C"]
+        self.flux_comp_max_1b = update["FluxcompMax"]
+        self.reserved_version_2b = update["Reservedversion"]
+        self.year_1b = update["Progyear"]
+        self.month_1b = update["Progmonth"]
+        self.day_1b = update["Progdate"]
+        self.hour_1b = update["Proghour"]
+        self.led_pwm_l1_b2 = update["LEDPWMlevel1"]
+        self.led_pwm_l2_b2 = update["LEDPWMlevel2"]
+        self.led_pwm_l3_b2 = update["LEDPWMlevel3"]
+        self.led_pwm_l4_b2 = update["LEDPWMlevel4"]
+        self.led_pwm_l5_b2 = update["LEDPWMlevel5"]
+        self.led_pwm_l6_b2 = update["LEDPWMlevel6"]
+        self.u_led_vl1_b2 = update["ULEDlevel1"]
+        self.u_led_vl2_b2 = update["ULEDlevel2"]
+        self.u_led_vl3_b2 = update["ULEDlevel3"]
+        self.u_led_vl4_b2 = update["ULEDlevel4"]
+        self.u_led_vl5_b2 = update["ULEDlevel5"]
+        self.u_led_vl6_b2 = update["ULEDlevel6"]
+        self.crc_2b = update["CRC"]
+        self.length_block1_1b = update["Lengthblock1"]
+        self.min_lin_dim_2b = update["MinlindimmA"]
+        self.digital_dim_freq_2b = update["DigdimfreqHz"]
+        self.vf_short_threshold_fast = update["Vftresholdfast"]
+        self.vf_short_threshold_slow = update["Vfthresholdslow"]
+        self.min_on_time_2b = update["Minontimens"]
+        self.nominal_voltage_2b = update["NomvoltageV"]
+        self.load_type_1b = update["Loadtype"]
+        self.ak_power_1window_1b = update["AKpower1winW"]
+        self.ak_power_2window_1b = update["AKpower2winW"]
+        self.dual_mon_1b = update["Dualmonitoring"]
