@@ -1,9 +1,8 @@
+from json import dumps, loads
 from django.shortcuts import render, get_object_or_404
 from django.views.generic.list import ListView
+from static.lib.pylib.safeserial import SafeSerial as Sfs  # pylint: disable=import-error, disable=no-name-in-module
 from .models import Converter, LedCalib, CcrCalib
-from django.http import HttpResponse
-from static.lib.pylib.safeserial import SafeSerial as Sfs  # pylint: disable=import-error
-from json import dumps, dump, loads
 import serial.tools.list_ports as stl  # pylint: disable=import-error disable=no-name-in-module
 from time import sleep
 import sys
@@ -65,7 +64,7 @@ def on_ser_closed(request, comm_proc, sel_port):
         ser.port = sel_port
         try:
             ser.open()
-        except Exception:
+        except Exception:  # pylint: disable=broad-except
             terminal_text.append("Selected port invalid")
             return render_ser_index(request)
         read = ser.open_admin()
@@ -84,9 +83,9 @@ def on_ser_closed(request, comm_proc, sel_port):
 def on_ser_open_open():
     """Does the actions of the serial port and terminal printing when serial port is open"""
     global prefix
-    ser.write_reg("open")
+    ser.write_command("open")
     sleep(0.05)
-    ret = ser.read_print_buffer()
+    ret = ser.read_inWaiting()
     if "(3)" in ret:
         terminal_text.append(
             "Terminal opened on correct level!")
@@ -102,15 +101,19 @@ def on_ser_open_open():
             i += 1
 
 
-def append_term(command, wait=0.05):
+def append_term(command, dump_end=b"\r\n\r\n"):
     """ Sends command and changes resp to page """
     global terminal_text
-    ser.write_reg(command)
-    sleep(wait)
-    buf = ser.read_print_buffer().split("\n")
-    terminal_text.append(prefix + buf[0].rstrip())
-    n = len(buf)
-    terminal_text = terminal_text + buf[1:n-1]
+    dump_ending = dump_end + prefix.encode("utf8")
+    ret = ser.read_to_next_entry(command, dump_ending).rstrip(
+        dump_ending.decode("utf8"))
+    buf = [x.rstrip() for x in ret.split("\n")]
+    filtered_buf = []
+    for e in buf:
+        if e != "":
+            filtered_buf.append(e)
+    terminal_text.append(prefix + filtered_buf[0].rstrip())
+    terminal_text = terminal_text + filtered_buf[1:len(filtered_buf)]
     return None
 
 
@@ -122,12 +125,12 @@ def render_ser_index(request):
     return render(request, "serial/index.html", {"entry_data": dumps(entry_data), "ser_ports": ports_list, "terminal_text": terminal_text})
 
 
-def hpc_fo_comm(hpc_comm, fo_comm, hpc_wait=0.1, fo_wait=0.1):
+def hpc_fo_comm(hpc_comm, fo_comm):
     """ HPC and FO behavior is different for certain command """
     if entry_data["conv"] == "HPC":
-        append_term(str(hpc_comm), float(hpc_wait))
+        append_term(str(hpc_comm))
     elif entry_data["conv"] == "FO/LCC":
-        append_term(str(fo_comm), float(fo_wait))
+        append_term(str(fo_comm))
     else:
         terminal_text.append(
             prefix + "Command not send, please specify converter type")
@@ -145,13 +148,14 @@ def serialIndex(request):
         terminal_text = [""]
         return render_ser_index(request)
     elif request.method == "POST":
+        print(request.POST)
         if ser.is_open:
             ser.reset_input_buffer()  # ! necessary?
         # TODO: help with shortened buffer time still gives issues on following command (input buffer still seems to have data?)
         entry_data = loads(request.POST["data"])
         manual_command_handle = entry_data["manual"]
         entry_data["manual"] = False  # /i always reset manual to False
-        print(entry_data)
+        # print(entry_data)
         comm_proc = entry_data["command"]
         sel_port = entry_data["sel_port"].split("-")[0].rstrip()
         # print(comm_proc)
@@ -163,12 +167,7 @@ def serialIndex(request):
             if ser.port == sel_port:
 
                 if manual_command_handle:
-                    try:
-                        buftime = float(entry_data["buf_time_man"])
-                    except ValueError:
-                        append_term(comm_proc, 0.1)
-                    else:
-                        append_term(comm_proc, buftime)
+                    append_term(comm_proc)
 
                 # * General commands
                 elif comm_proc == "open":
@@ -176,9 +175,6 @@ def serialIndex(request):
                 elif comm_proc == "clear":
                     terminal_text = ["", "Terminal cleared, port still open."]
                 elif comm_proc == "exit":
-                    # ser.write_reg("exit")
-                    # sleep(0.05)
-                    # ret = ser.read_print_buffer()
                     ser.close()
                     terminal_text.append("Port closed")
                 elif comm_proc == "getver":
@@ -186,31 +182,20 @@ def serialIndex(request):
                 elif comm_proc == "readvolt":
                     append_term("readvolt")
                 elif comm_proc == "help":
-                    ser.write_reg("help")
-                    reps = 5 if entry_data["conv"] == "FO/LCC" else 12
-                    i = 0
-                    endstring = ""
-                    while i < reps:
-                        sleep(0.2)
-                        endstring += ser.read_print_buffer()
-                        i += 1
-                    buf = endstring.split("\n")
-                    buf.pop()
-                    terminal_text.append(prefix + buf[0])
-                    terminal_text = terminal_text + buf[1:]
+                    append_term("help")
                 elif comm_proc == "recvtest":
-                    append_term("recvtest", 1.2)
+                    append_term("recvtest")
 
                 # * ccr commands
                 elif comm_proc == "getccr":
                     hpc_fo_comm("getCCRcurrent", "getccr")
                 elif comm_proc == "calibccrlo 2000":
                     hpc_fo_comm("calibCCRlo 2000",
-                                "calibccrlo 2000", 0.05, 1.1)
+                                "calibccrlo 2000")
                 elif comm_proc == "calibccrhi 6600":
                     hpc_fo_comm("calibCCRhi 6600",
-                                "calibccrlo 6600", 0.05, 1.1)
-                elif comm_proc == "calibccrsave":
+                                "calibccrlo 6600")
+                elif comm_proc == "calibccrsave yes":
                     hpc_fo_comm("calibCCRsave yes", "calibccrsave yes")
                 elif comm_proc == "getcalib":
                     append_term("getcalib")
@@ -218,7 +203,7 @@ def serialIndex(request):
                 # * led commands
                 elif comm_proc == "ledinfo":
                     sending = f"ledinfo {entry_data['arg1']} {entry_data['arg2']}"
-                    append_term(sending, 0.3)
+                    append_term(sending)
                 elif comm_proc == "ledcalib":
                     # terminal_text.append("Not implemented yet")
                     # TODO: implement ledcalib correctly? --> TEST FUNCTIONALITY IN REAL LIFE (FO / HPC)
@@ -227,25 +212,25 @@ def serialIndex(request):
                     else:
                         if entry_data["ledcalib_state"][0] == "off":
                             sending = f"ledcalib {entry_data['arg1']}"
-                            append_term(sending, 0.5)
+                            append_term(sending)
                             entry_data["ledcalib_state"] = ["low", 0]
                         elif entry_data["ledcalib_state"][0] == "low":
                             sending = str(entry_data["ledcalib_state"][1])
-                            append_term(sending, 0.2)
+                            append_term(sending)
                             entry_data["ledcalib_state"] = ["high", 0]
                         elif entry_data["ledcalib_state"][0] == "high":
                             sending = str(entry_data["ledcalib_state"][1])
-                            append_term(sending, 0.2)
+                            append_term(sending)
                             entry_data["ledcalib_state"] = ["off", 0]
                 elif comm_proc == "getledcalib":
                     sending = f"getledcalib {entry_data['arg1']}"
                     append_term(sending)
                 elif comm_proc == "ledinactivate":
                     sending = f"ledinactivate {entry_data['arg1']}"
-                    append_term(sending, 1.2)
+                    append_term(sending)
                 elif comm_proc == "getledstatus":
                     sending = f"getledstatus {entry_data['arg1']}"
-                    append_term(sending, 0.4)
+                    append_term(sending)
                 elif comm_proc == "setledovr":
                     sending = f"setledovr {entry_data['arg1']} {entry_data['arg2']}"
                     append_term(sending)
@@ -265,18 +250,24 @@ def serialIndex(request):
                     sending = f"setTXpower {entry_data['arg1']}"
                     append_term(sending)
                 elif comm_proc == "params dump":
-                    append_term("params dump", 0.5)
+                    append_term("params dump")
                 elif comm_proc == "getPID":
-                    append_term("getPID", 0.1)
+                    append_term("getPID")
                 elif comm_proc == "setPID":
-                    # DONE: take PID entry field and implement code for PID programmation of PCBAs..
-                    sending = f"setPID {entry_data['pid']}"
-                    append_term(sending, 0.3)
-                    sleep(0.05)
-                    ser.write("yes\r".encode("utf8"))
-                    sleep(0.1)
-                    read = ser.read_print_buffer()
-                    terminal_text = terminal_text + read.split("\n")
+                    # TODO: fix this
+                    terminal_text.append(
+                        prefix + "command not implemented yet")
+                    # sending = f"setPID {entry_data['pid']}"
+                    # print(sending)
+                    # ser.write(sending.encode("utf8"))
+                    # sleep(0.1)
+                    # read = ser.read_inWaiting()
+                    # print(read)
+                    # terminal_text = prefix + read
+                    # ser.write("yes\r".encode("utf8"))
+                    # sleep(0.1)
+                    # read = ser.read_inWaiting()
+                    # terminal_text = terminal_text + read
 
                 # * not implemented
                 else:

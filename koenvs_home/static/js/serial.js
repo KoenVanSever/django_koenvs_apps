@@ -4,7 +4,7 @@ let arg2 = document.querySelector("#entry_arg2");
 let hpc = document.querySelectorAll("input[type='radio'][value='HPC']")[0];
 let fo = document.querySelectorAll("input[type='radio'][value='FO/LCC']")[0];
 let portList = document.querySelectorAll("option[class='conv_list']");
-let bufTimeMan = document.getElementById("buftime");
+// let bufTimeMan = document.getElementById("buftime");
 let finalForm = document.getElementById("finalForm");
 let finalData = document.getElementById("finalData");
 let dialog = document.querySelector('.example-dialog');
@@ -44,7 +44,7 @@ let getPortStatus = () => {
 function updateEntryData(entry) {
     arg1.value = entry["arg1"];
     arg2.value = entry["arg2"];
-    bufTimeMan.value = entry["buf_time_man"];
+    // bufTimeMan.value = entry["buf_time_man"];
     if (entry["conv"] == "HPC") {
         hpc.setAttribute("checked", "checked")
     } else {
@@ -73,7 +73,7 @@ function getEntryData(comm, manual = false, ledcalib_state = ["off", 0]) {
         "conv": getConvStatus(),
         "sel_port": getPortStatus(),
         "command": comm,
-        "buf_time_man": bufTimeMan.value,
+        // "buf_time_man": bufTimeMan.value,
         "manual": manual,
         "ledcalib_state": ledcalib_state,
         "pid": pid.value,
