@@ -3,10 +3,10 @@ from django.http import FileResponse
 from .models import Parameter
 from json import loads
 from pathlib import Path
+from static.koenvs_modules.general import store_general_session
 # Create your views here.
 
 CAT_CHOICES = [x[0] for x in Parameter.cat_choices] + [""]
-main_height = None
 
 
 def split_tuples(tuples, amount):
@@ -22,6 +22,8 @@ def split_tuples(tuples, amount):
 
 def paramsIndex(request):
     """ Dipslays self made index page for params application """
+    request = store_general_session(request)
+    print(request.session["main_height"])
     parameter_list = Parameter.objects.all().order_by(
         "-category", "csv_name")
     if request.method == "GET":
@@ -41,17 +43,14 @@ def paramsIndex(request):
 
 
 def paramsDetail(request, param_id):
-    global main_height  # pylint: disable=global-statement
+    request = store_general_session(request)
     if request.method == "GET":
         return redirect("/params/", permanent=True)
     elif request.method == "POST":
         # - Determine sizing of different fields
-        if "height" in request.POST.keys():
-            main_height = int(request.POST["height"]) - 72
-        rows = main_height // 44
+        rows = (request.session["main_height"] - 60) // 44
         message = ""
 
-        print(request.POST)
         # - Handle export csv and save db
         if "export" in request.POST:
             # /i get data
@@ -78,7 +77,7 @@ def paramsDetail(request, param_id):
                 param_id = new.id
                 message = "New parameter file created"
 
-            if "export" in request.POST and request.POST["export"] == "export_csv":
+            if request.POST["export"] == "export_csv":
                 temp = Parameter.objects.get(csv_name=target_csv_name)
                 target_dir = Path(__file__, "..", "..", "..",
                                   "temporary", "generated").resolve()

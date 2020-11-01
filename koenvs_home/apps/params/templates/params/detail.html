@@ -4,7 +4,6 @@
 <title>KoenVS - Params Detail</title>
 {% load static %}
 <link rel="stylesheet" type="text/css" href="{% static 'css/params_detail.css' %}">
-<script type="text/javascript" src="{% static 'js/params_detail.js' %}" defer></script>
 {% endblock %}
 
 {% block header %}
@@ -39,7 +38,8 @@
                 <div class="param_label">
                     {{ line.0 }}:
                 </div>
-                <div class="param_input"><input type="text" size="1" value="{{ line.2 }}"></div>
+                <div class="param_input"><input type="text" class="byte" id="byte{{line.1}}" size="1"
+                        value="{{ line.2 }}"></div>
             </div>
             {% endfor %}
         </div>
@@ -54,18 +54,23 @@
 {% endblock%}
 
 {% block scriptend %}
+<!-- - page needs to render first before you can find these element -->
 <script defer>
-    let updateDB = document.querySelector("#db_update");
-    let exportCSV = document.querySelector("#csv_exp");
+    const updateDB = document.querySelector("#db_update");
+    const exportCSV = document.querySelector("#csv_exp");
+    const paramList = document.querySelectorAll(".param");
+    const byteList = document.querySelectorAll(".byte");
+
     updateDB.addEventListener("click", () => {
-        document.querySelector("#data").setAttribute("value", JSON.stringify(getData()));
-        console.log("pressed");
+        document.querySelector("#data").setAttribute("value", JSON.stringify(getData(paramList)));
+        document.querySelector("#export").value = "data";
         document.querySelector("#form_control").submit();
     });
     exportCSV.addEventListener("click", () => {
-        document.querySelector("#data").setAttribute("value", JSON.stringify(getData()));
+        document.querySelector("#data").setAttribute("value", JSON.stringify(getData(paramList)));
         document.querySelector("#export").value = "export_csv";
         document.querySelector("#form_control").submit();
     })
 </script>
+<script type="text/javascript" src="{% static 'js/params_detail.js' %}" defer></script>
 {% endblock %}

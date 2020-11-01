@@ -4,3 +4,4 @@ djangoenv/
 *.pyc
 django/
 **/.vscode
+koenvs/temporary/generated/

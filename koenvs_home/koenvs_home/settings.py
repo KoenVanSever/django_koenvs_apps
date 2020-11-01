@@ -100,8 +100,7 @@ DATABASES = {
 }
 # /i gives you the option to put an environment variable called DJANGO_DATABASE
 DATABASES['default'] = DATABASES[environ["DATABASE_USED"]
-                                 ] if "DATABASE_USED" in environ.keys() else "main"
-
+                                 ] if "DATABASE_USED" in environ.keys() else DATABASES['main']
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators

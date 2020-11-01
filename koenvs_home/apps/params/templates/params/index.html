@@ -92,7 +92,8 @@
                         <td class="det">
                             <form method="post" action="{% url 'params:detail' param.id %}">
                                 {% csrf_token %}
-                                <input id="height" type="text" name="height" value="" hidden>
+                                <input class="height" type="text" name="height" value="" hidden>
+                                <input class="width" type="text" name="width" value="" hidden>
                                 <input class="detail_but" type="submit" value="detail">
                             </form>
                         </td>
@@ -117,9 +118,13 @@
     let main = document.querySelector("main");
     let heightMain = main.clientHeight;
     let widthMain = main.clientWidth;
-    let targets = document.querySelectorAll("#height");
+    let targets = document.querySelectorAll(".height");
     targets.forEach(sel => {
         sel.setAttribute("value", heightMain);
+    });
+    targets = document.querySelectorAll(".width");
+    targets.forEach(sel => {
+        sel.setAttribute("value", widthMain);
     });
 </script>
 {% endblock %}

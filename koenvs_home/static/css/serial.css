@@ -36,6 +36,8 @@ main {
     margin-bottom: 2px;
     border-color: gray;
     position: relative;
+    overflow: hidden;
+    white-space: nowrap;
 } 
 /* .ser_button.gen:hover, .ser_button.ccr:hover, .ser_button.asp:hover, .ser_button.led:hover */
 .ser_button:hover { background-color: white; color: #444444; } 
