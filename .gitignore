@@ -5,3 +5,4 @@ djangoenv/
 django/
 **/.vscode
 koenvs/temporary/generated/
+geckodriver.log
