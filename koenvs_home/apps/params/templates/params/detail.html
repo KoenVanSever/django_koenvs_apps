@@ -17,24 +17,21 @@
     <div id="control">
         <form method="post" id="form_control" action="{% url 'params:detail' param_id %}">
             {% csrf_token %}
-            <label>&nbsp;CSV name: <input type="text" id="csv_entry" size="20" name="csv_entry"
+            <label>&nbsp;CSV name: <input type="text" id="csv_entry" size="30" name="csv_entry"
                     value="{{ text_info.csv_name }}"></label>
-            <label>&nbsp;Short name: <input type="text" id="short_entry" size="20" name="short_entry"
+            <label>&nbsp;Short name: <input type="text" id="short_entry" size="25" name="short_entry"
                     value="{{ text_info.short_name }}"></label>
             <label>&nbsp;Category: <input type="text" id="cat_entry" size="1" name="cat_entry"
                     value="{{ text_info.category }}"></label>
             <input type="text" hidden id="data" name="data" value="">
             <input id="export" type="text" hidden name="export" value="data">
-            <p><b>{{ process_message }}</b></p>
+            <p><b>Message: {{ process_message|default:"No message" }}</b></p>
         </form>
-        <button id="csv_exp">Export to CSV</button>
-        <button id="db_update">Save to DB</button>
     </div>
     <div id="show">
-        {% for s in split %}
-        <div>
-            {% for line in s %}
-            <div class="param">
+        <div id="entries">
+            {% for line in tuples %}
+            <div style="background-color: {{ line.3 }};" class="param">
                 <div class="param_label">
                     {{ line.0 }}:
                 </div>
@@ -43,7 +40,17 @@
             </div>
             {% endfor %}
         </div>
-        {% endfor %}
+        <div id="adjust">
+            <button id="csv_exp">Export to CSV</button>
+            <button id="db_update">Save to DB</button>
+            <button id="set_prog">Prog to today</button>
+            <button id="set_release">Release to today</button>
+            <button id="adjust_flux">Adjust Flux</button>
+            <label>Flux: <input type="text" size="1" id="flux_input"></label>
+            <button id="default_regular">Set default (inset)</button>
+            <button id="default_sign">Set default (sign)</button>
+            <a href="{% url 'params:index' %}">Back to params</a>
+        </div>
     </div>
 </div>
 
@@ -56,6 +63,7 @@
 {% block scriptend %}
 <!-- - page needs to render first before you can find these element -->
 <script defer>
+    const defParams = '{{ request.session.default_params | escapejs }}'.replace(/'/g, '"');
     const updateDB = document.querySelector("#db_update");
     const exportCSV = document.querySelector("#csv_exp");
     const paramList = document.querySelectorAll(".param");

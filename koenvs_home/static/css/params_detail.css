@@ -1,5 +1,5 @@
 #main_div { 
-    width: 95%;
+    width: 99%;
     margin-left: auto;
     margin-right: auto;
     height: 100%;
@@ -12,7 +12,7 @@
     margin: 5px 0px 5px 0px;
     display: flex;
     align-items: center;
-    width: 99%;
+    width: 100%;
     background-color: gray;
     border-radius: 5px;
     color: white;
@@ -23,47 +23,78 @@
     display: flex;
     align-items: center;
 }
-
-#control button {
+#show {
+    height: calc(100% - 60px);
+    display: flex;
+    justify-content: flex-start;
+}
+#entries {
+    display: inline table;
+    width: calc(100% - 160px);
+    font-size: 0px;
+}
+#adjust {
+    display: inline list-item;
+    align-items: flex-start;
+    height: 99%;
+    width: 160px;
+    background-color: gray;
+    border-radius: 5px;
+    color: white;
+}
+#adjust button, #adjust a {
+    display: block;
+    margin: 5px;
     width: 150px;
     background-color: #ff4242;
     height: 35px;
     border: 1px solid white;
     color: white;
-    margin-right: 10px;
+    border-radius: 8px;
+    font: 1em "Ubuntu", sans-serif;
+}
+#adjust a {
+    text-align: center;
+    text-decoration: none;
+    line-height: 35px;
+    background-color: lightblue;
+}
+#adjust label {
+    margin-left: 10px;
 }
 
-#control button:hover {
+#adjust button:hover {
     background-color: white;
     border-color: #ff4242;
     color: #ff4242;
 }
+#adjust a:hover {
+    background-color: white;
+    border-color:lightblue;
+    color: lightblue;
+}
 
 #control form p {
-    margin-left: 10px;
+    margin-left: 20px;
     color: white;
+    font-size: 1.2em;
 }
 
 #control form input[type="text"] {
     height: 35px;
 }
-#show {
-    display: flex;
-    justify-content: flex-start;
-    height: calc(100% - 60px);
-}
 .param{
-    margin: 3px;
+    width: calc(20% - 11px);
+    margin: 2px;
     padding: 3px;
     height: 35px;
     background-color: #f49b01;
     color: white;
     border-radius: 5px;
-    width: 275px;
-    display: grid;
-    grid-template-columns: 200px 75px;
+    display: inline grid;
+    grid-template-columns: calc(100% - 75px) 75px;
 }
 .param input[type="text"] { height: 32px; }
 
-.param_label { align-self: center; }
+.param_label { align-self: center; font-size: 16px; }
 /* .param_input { float: right; } */

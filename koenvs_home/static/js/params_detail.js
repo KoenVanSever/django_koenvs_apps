@@ -19,6 +19,7 @@ inverseInput(document.getElementById("byte131"), document.getElementById("byte13
 
 const currentDate = new Date();
 function setProgDate(date) {
+    console.log("Run setProgDate");
     let [month, day, year] = date.toLocaleDateString().split("/");
     let [hour, minute, second] = date.toLocaleTimeString().slice(0, 7).split(":");
     document.getElementById("byte171").value = year.substring(year.length - 2, year.length);
@@ -39,6 +40,7 @@ function ISO8601_week_no(dt) {
 }
 
 function setRelDateRegInv(date) {
+    console.log("Run setRelDateRegInv");
     year = date.getFullYear();
     week = ISO8601_week_no(date);
     document.getElementById("byte128").value = String(year - 2000);
@@ -51,10 +53,32 @@ function setRelDateRegInv(date) {
     document.getElementById("byte135").value = "254";
 }
 
-// TODO: put buttons for these functions to run instead of running them upon page rendering
-setProgDate(currentDate);
-setRelDateRegInv(currentDate);
-
+document.getElementById("set_prog").addEventListener("click", () => { setProgDate(currentDate) });
+document.getElementById("set_release").addEventListener("click", () => { setRelDateRegInv(currentDate) });
+document.getElementById("adjust_flux").addEventListener("click", () => {
+    let targetFlux = Number(document.getElementById("flux_input").value);
+    for (let i of [163, 164, 165, 166, 167, 168]) {
+        let targetEntry = "byte" + i;
+        console.log(targetEntry);
+        document.getElementById(targetEntry).value = targetFlux;
+    }
+});
+function setDefault(params, ovr = null) {
+    let temp = JSON.parse(params);
+    for (e in ovr) {
+        temp[e] = ovr[e];
+    }
+    for (e in temp) {
+        let id = "byte" + e;
+        document.getElementById(id).value = temp[e];
+    }
+}
+document.getElementById("default_regular").addEventListener("click", () => {
+    setDefault(defParams, { 212: 255 });
+});
+document.getElementById("default_sign").addEventListener("click", () => {
+    setDefault(defParams, { 212: 254 });
+});
 function getData(paramList) {
     temp = JSON;
     paramList.forEach(e => {

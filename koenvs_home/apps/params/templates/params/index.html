@@ -114,17 +114,5 @@
 {% endblock%}
 
 {% block scriptend %}
-<script type="text/javascript" defer>
-    let main = document.querySelector("main");
-    let heightMain = main.clientHeight;
-    let widthMain = main.clientWidth;
-    let targets = document.querySelectorAll(".height");
-    targets.forEach(sel => {
-        sel.setAttribute("value", heightMain);
-    });
-    targets = document.querySelectorAll(".width");
-    targets.forEach(sel => {
-        sel.setAttribute("value", widthMain);
-    });
-</script>
+
 {% endblock %}

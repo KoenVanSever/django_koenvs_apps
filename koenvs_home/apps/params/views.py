@@ -1,29 +1,28 @@
 from django.shortcuts import render, redirect
 from django.http import FileResponse
 from .models import Parameter
-from json import loads
+from json import loads, dumps
 from pathlib import Path
-from static.koenvs_modules.general import store_general_session
 # Create your views here.
 
+
+def get_default_params():
+    default = Parameter()
+    def_tuple = default.get_four_way_tuple()
+    params_default = {}
+    for e in def_tuple:
+        params_default[e[1]] = e[2]
+    return dumps(params_default)
+
+
 CAT_CHOICES = [x[0] for x in Parameter.cat_choices] + [""]
-
-
-def split_tuples(tuples, amount):
-    split = []
-    for x in range(len(tuples)):
-        mod = x % amount
-        li = x // amount
-        if mod == 0:
-            split.append([])
-        split[li].append(tuples[x])
-    return split
+DEFAULT_PARAMS = get_default_params()
 
 
 def paramsIndex(request):
     """ Dipslays self made index page for params application """
-    request = store_general_session(request)
-    print(request.session["main_height"])
+    if not request.session.get("default_params"):
+        request.session["default_params"] = DEFAULT_PARAMS
     parameter_list = Parameter.objects.all().order_by(
         "-category", "csv_name")
     if request.method == "GET":
@@ -43,12 +42,9 @@ def paramsIndex(request):
 
 
 def paramsDetail(request, param_id):
-    request = store_general_session(request)
     if request.method == "GET":
         return redirect("/params/", permanent=True)
     elif request.method == "POST":
-        # - Determine sizing of different fields
-        rows = (request.session["main_height"] - 60) // 44
         message = ""
 
         # - Handle export csv and save db
@@ -90,6 +86,6 @@ def paramsDetail(request, param_id):
         obj = Parameter.objects.get(pk=param_id)
         text_info = {"csv_name": obj.csv_name,
                      "short_name": obj.short_name, "category": obj.category}
-        tuples = obj.get_three_way_tuple()
-        split = split_tuples(tuples, rows)
-        return render(request, "params/detail.html", {"param_id": param_id, "split": split, "text_info": text_info, "process_message": message})
+        tuples = obj.get_four_way_tuple()
+
+        return render(request, "params/detail.html", {"param_id": param_id, "tuples": tuples, "text_info": text_info, "process_message": message})

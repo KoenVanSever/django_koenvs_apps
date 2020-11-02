@@ -37,7 +37,7 @@ class Parameter(models.Model):
         * SIDENOTE/TODO on last block -> 220-221 found to be populated: WHAT IS THIS?
     """
 
-    @classmethod
+    @ classmethod
     def upload_file(cls, path, category=None):
         """ create a DB entry based on a file path """
         with open(path) as file:
@@ -59,7 +59,7 @@ class Parameter(models.Model):
         else:
             raise AttributeError("data parsed is not right format")
 
-    @classmethod
+    @ classmethod
     def upload_string(cls, string, csv_name, category=None):
         """ create a DB entry based on a stream/string """
         delim = ";" if ";" in string else ","
@@ -193,7 +193,7 @@ class Parameter(models.Model):
         self.dimming_curve_55_2b = dimlist[6]
         self.dimming_curve_66_2b = dimlist[7]
 
-    @property
+    @ property
     def dimming_curve(self):
         ret = [self.dimming_curve_14_2b, self.dimming_curve_28_2b, self.dimming_curve_34_2b, self.dimming_curve_41_2b,
                self.dimming_curve_48_2b, self.dimming_curve_52_2b, self.dimming_curve_55_2b, self.dimming_curve_66_2b]
@@ -207,7 +207,7 @@ class Parameter(models.Model):
         self.flux_comp_75_1b = flux
         self.flux_comp_max_1b = flux
 
-    @property
+    @ property
     def flux_analysis(self):
         ret = self.flux_comp_m25_1b if self.flux_comp_m25_1b == self.flux_comp_0_1b == self.flux_comp_25_1b == self.flux_comp_50_1b == self.flux_comp_75_1b == self.flux_comp_max_1b else "Varying!"
         return ret
@@ -221,7 +221,7 @@ class Parameter(models.Model):
             self.nominal_voltage_1b = 255
             self.nominal_voltage_2b = round(volt * 100)
 
-    @property
+    @ property
     def real_nom_voltage(self):
         if self.nominal_voltage_2b == 65535:
             return self.nominal_voltage_1b / 10
@@ -334,69 +334,120 @@ class Parameter(models.Model):
         self.ak_power_2window_1b = l[214]
         self.dual_mon_1b = l[215]
 
-    def get_three_way_tuple(self):
+    def get_four_way_tuple(self):
         ret = []
-        ret.append(("Rel year", "128", self.rel_year_1b))
-        ret.append(("Rel week", "129", self.rel_week_1b))
-        ret.append(("Rel version", "130", self.rel_ver_1b))
-        ret.append(("Rel not used", "131", self.rel_not_used_1b))
-        ret.append(("Rel year inv", "132", self.inv_rel_year_1b))
-        ret.append(("Rel week inv", "133", self.inv_rel_week_1b))
-        ret.append(("Rel version inv", "134", self.inv_rel_ver_1b))
-        ret.append(("Rel not used inv", "135", self.inv_rel_not_used_1b))
-        ret.append(("Type", "136", self.type_1b))
-        ret.append(("Nom current (mA)", "137 & 138", self.nominal_current_2b))
-        ret.append(("Nom voltage (V) (1b)", "139", self.nominal_voltage_1b))
-        ret.append(("Therm res (°C/W)", "140", self.thermal_resistance_1b))
-        ret.append(("Max junc temp (°C)", "141", self.max_junction_temp_1b))
-        ret.append(("Flux bin info", "142", self.flux_bin_info_1b))
-        ret.append(("Color", "143", self.color_1b))
-        ret.append(("Fitting type", "144", self.fitting_type_1b))
-        ret.append(("Number of LEDs", "145", self.number_of_leds_1b))
-        ret.append(("LED revision", "146", self.led_revision_1b))
-        ret.append(("DC 1.4A (mA)", "147 & 148", self.dimming_curve_14_2b))
-        ret.append(("DC 2.8A (mA)", "149 & 150", self.dimming_curve_28_2b))
-        ret.append(("DC 3.4A (mA)", "151 & 152", self.dimming_curve_34_2b))
-        ret.append(("DC 4.1A (mA)", "153 & 154", self.dimming_curve_41_2b))
-        ret.append(("DC 4.8A (mA)", "155 & 156", self.dimming_curve_48_2b))
-        ret.append(("DC 5.2A (mA)", "157 & 158", self.dimming_curve_52_2b))
-        ret.append(("DC 5.5A (mA)", "159 & 160", self.dimming_curve_55_2b))
-        ret.append(("DC 6.6A (mA)", "161 & 162", self.dimming_curve_66_2b))
-        ret.append(("Flux comp m25°C (%)", "163", self.flux_comp_m25_1b))
-        ret.append(("Flux comp 0°C (%)", "164", self.flux_comp_0_1b))
-        ret.append(("Flux comp 25°C (%)", "165", self.flux_comp_25_1b))
-        ret.append(("Flux comp 50°C (%)", "166", self.flux_comp_50_1b))
-        ret.append(("Flux comp 75°C (%)", "167", self.flux_comp_75_1b))
-        ret.append(("Flux comp Max (%)", "168", self.flux_comp_max_1b))
-        ret.append(("Reserved version", "169 & 170", self.reserved_version_2b))
-        ret.append(("Prog year", "171", self.year_1b))
-        ret.append(("Prog month", "172", self.month_1b))
-        ret.append(("Prog date", "173", self.day_1b))
-        ret.append(("Prog hour", "174", self.hour_1b))
-        ret.append(("LED PWM level 1", "175 & 176", self.led_pwm_l1_b2))
-        ret.append(("LED PWM level 2", "177 & 178", self.led_pwm_l2_b2))
-        ret.append(("LED PWM level 3", "179 & 180", self.led_pwm_l3_b2))
-        ret.append(("LED PWM level 4", "181 & 182", self.led_pwm_l4_b2))
-        ret.append(("LED PWM level 5", "183 & 184", self.led_pwm_l5_b2))
-        ret.append(("LED PWM level 6", "185 & 186", self.led_pwm_l6_b2))
-        ret.append(("U LED level 1", "187 & 188", self.u_led_vl1_b2))
-        ret.append(("U LED level 2", "189 & 190", self.u_led_vl2_b2))
-        ret.append(("U LED level 3", "191 & 192", self.u_led_vl3_b2))
-        ret.append(("U LED level 4", "193 & 194", self.u_led_vl4_b2))
-        ret.append(("U LED level 5", "195 & 196", self.u_led_vl5_b2))
-        ret.append(("U LED level 6", "197 & 198", self.u_led_vl6_b2))
-        ret.append(("CRC", "199 & 200", self.crc_2b))
-        ret.append(("Length block 1", "201", self.length_block1_1b))
-        ret.append(("Min lin dim (mA)", "202 & 203", self.min_lin_dim_2b))
-        ret.append(("Dig dim freq (Hz)", "204 & 205", self.digital_dim_freq_2b))
-        ret.append(("Vf treshold fast", "206", self.vf_short_threshold_fast))
-        ret.append(("Vf threshold slow", "207", self.vf_short_threshold_slow))
-        ret.append(("Min on time (ns)", "208 & 209", self.min_on_time_2b))
-        ret.append(("Nom voltage (V)", "210 & 211", self.nominal_voltage_2b))
-        ret.append(("Load type", "212", self.load_type_1b))
-        ret.append(("AK power 1 win (W)", "213", self.ak_power_1window_1b))
-        ret.append(("AK power 2 win (W)", "214", self.ak_power_2window_1b))
-        ret.append(("Dual monitoring", "215", self.dual_mon_1b))
+        colors = {"relprog": "#e95b0b", "led": "#ed7103",
+                  "dimming": "#f8b123", "flux": "#e8b135", "varia": "#f49b01"}
+        ret.append(("Rel year", "128", self.rel_year_1b, colors["relprog"]))
+        ret.append(("Rel week", "129", self.rel_week_1b, colors["relprog"]))
+        ret.append(("Rel version", "130", self.rel_ver_1b, colors["relprog"]))
+        ret.append(("Rel not used", "131", self.rel_not_used_1b,
+                    colors["relprog"]))
+        ret.append(("Rel year inv", "132", self.inv_rel_year_1b,
+                    colors["relprog"]))
+        ret.append(("Rel week inv", "133", self.inv_rel_week_1b,
+                    colors["relprog"]))
+        ret.append(("Rel version inv", "134", self.inv_rel_ver_1b,
+                    colors["relprog"]))
+        ret.append(("Rel not used inv", "135",
+                    self.inv_rel_not_used_1b, colors["relprog"]))
+        ret.append(("Type", "136", self.type_1b, colors["varia"]))
+        ret.append(("Nom current (mA)", "137 & 138",
+                    self.nominal_current_2b, colors["led"]))
+        ret.append(("Nom voltage (V) (1b)", "139",
+                    self.nominal_voltage_1b, colors["led"]))
+        ret.append(("Therm res (°C/W)", "140",
+                    self.thermal_resistance_1b, colors["varia"]))
+        ret.append(("Max junc temp (°C)", "141",
+                    self.max_junction_temp_1b, colors["varia"]))
+        ret.append(("Flux bin info", "142", self.flux_bin_info_1b,
+                    colors["varia"]))
+        ret.append(("Color", "143", self.color_1b, colors["varia"]))
+        ret.append(("Fitting type", "144", self.fitting_type_1b,
+                    colors["varia"]))
+        ret.append(("Number of LEDs", "145",
+                    self.number_of_leds_1b, colors["led"]))
+        ret.append(("LED revision", "146", self.led_revision_1b,
+                    colors["led"]))
+        ret.append(("DC 1.4A (mA)", "147 & 148",
+                    self.dimming_curve_14_2b, colors["dimming"]))
+        ret.append(("DC 2.8A (mA)", "149 & 150",
+                    self.dimming_curve_28_2b, colors["dimming"]))
+        ret.append(("DC 3.4A (mA)", "151 & 152",
+                    self.dimming_curve_34_2b, colors["dimming"]))
+        ret.append(("DC 4.1A (mA)", "153 & 154",
+                    self.dimming_curve_41_2b, colors["dimming"]))
+        ret.append(("DC 4.8A (mA)", "155 & 156",
+                    self.dimming_curve_48_2b, colors["dimming"]))
+        ret.append(("DC 5.2A (mA)", "157 & 158",
+                    self.dimming_curve_52_2b, colors["dimming"]))
+        ret.append(("DC 5.5A (mA)", "159 & 160",
+                    self.dimming_curve_55_2b, colors["dimming"]))
+        ret.append(("DC 6.6A (mA)", "161 & 162",
+                    self.dimming_curve_66_2b, colors["dimming"]))
+        ret.append(("Flux comp m25°C (%)", "163",
+                    self.flux_comp_m25_1b, colors["flux"]))
+        ret.append(("Flux comp 0°C (%)", "164",
+                    self.flux_comp_0_1b, colors["flux"]))
+        ret.append(("Flux comp 25°C (%)", "165",
+                    self.flux_comp_25_1b, colors["flux"]))
+        ret.append(("Flux comp 50°C (%)", "166",
+                    self.flux_comp_50_1b, colors["flux"]))
+        ret.append(("Flux comp 75°C (%)", "167",
+                    self.flux_comp_75_1b, colors["flux"]))
+        ret.append(("Flux comp Max (%)", "168",
+                    self.flux_comp_max_1b, colors["flux"]))
+        ret.append(("Reserved version", "169 & 170",
+                    self.reserved_version_2b, colors["varia"]))
+        ret.append(("Prog year", "171", self.year_1b, colors["relprog"]))
+        ret.append(("Prog month", "172", self.month_1b, colors["relprog"]))
+        ret.append(("Prog date", "173", self.day_1b, colors["relprog"]))
+        ret.append(("Prog hour", "174", self.hour_1b, colors["relprog"]))
+        ret.append(("LED PWM level 1", "175 & 176",
+                    self.led_pwm_l1_b2, colors["varia"]))
+        ret.append(("LED PWM level 2", "177 & 178",
+                    self.led_pwm_l2_b2, colors["varia"]))
+        ret.append(("LED PWM level 3", "179 & 180",
+                    self.led_pwm_l3_b2, colors["varia"]))
+        ret.append(("LED PWM level 4", "181 & 182",
+                    self.led_pwm_l4_b2, colors["varia"]))
+        ret.append(("LED PWM level 5", "183 & 184",
+                    self.led_pwm_l5_b2, colors["varia"]))
+        ret.append(("LED PWM level 6", "185 & 186",
+                    self.led_pwm_l6_b2, colors["varia"]))
+        ret.append(("U LED level 1", "187 & 188",
+                    self.u_led_vl1_b2, colors["varia"]))
+        ret.append(("U LED level 2", "189 & 190",
+                    self.u_led_vl2_b2, colors["varia"]))
+        ret.append(("U LED level 3", "191 & 192",
+                    self.u_led_vl3_b2, colors["varia"]))
+        ret.append(("U LED level 4", "193 & 194",
+                    self.u_led_vl4_b2, colors["varia"]))
+        ret.append(("U LED level 5", "195 & 196",
+                    self.u_led_vl5_b2, colors["varia"]))
+        ret.append(("U LED level 6", "197 & 198",
+                    self.u_led_vl6_b2, colors["varia"]))
+        ret.append(("CRC", "199 & 200", self.crc_2b, colors["varia"]))
+        ret.append(("Length block 1", "201", self.length_block1_1b,
+                    colors["varia"]))
+        ret.append(("Min lin dim (mA)", "202 & 203",
+                    self.min_lin_dim_2b, colors["led"]))
+        ret.append(("Dig dim freq (Hz)", "204 & 205",
+                    self.digital_dim_freq_2b, colors["led"]))
+        ret.append(("Vf treshold fast", "206",
+                    self.vf_short_threshold_fast, colors["varia"]))
+        ret.append(("Vf threshold slow", "207",
+                    self.vf_short_threshold_slow, colors["varia"]))
+        ret.append(("Min on time (ns)", "208 & 209",
+                    self.min_on_time_2b, colors["varia"]))
+        ret.append(("Nom voltage (V)", "210 & 211",
+                    self.nominal_voltage_2b, colors["led"]))
+        ret.append(("Load type", "212", self.load_type_1b, colors["led"]))
+        ret.append(("AK power 1 win (W)", "213",
+                    self.ak_power_1window_1b, colors["varia"]))
+        ret.append(("AK power 2 win (W)", "214",
+                    self.ak_power_2window_1b, colors["varia"]))
+        ret.append(("Dual monitoring", "215", self.dual_mon_1b, colors["led"]))
         return ret
 
     def update_data_without_save(self, update):
