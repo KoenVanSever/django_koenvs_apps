@@ -16,6 +16,7 @@
     background-color: gray;
     border-radius: 5px;
     color: white;
+    font: 1em "Ubuntu", sans-serif;
 }
 
 #control form {
@@ -23,11 +24,56 @@
     display: flex;
     align-items: center;
 }
+
+#csv_label { width: 30%; }
+#short_label { width: 25%; }
+#cat_label { width: 10%; }
+#cat_label input[type="text"] { width: 40% !important; }
+#control form p {
+    margin-left: 20px;
+    color: white;
+    font-size: 1.2em;
+}
+
+#control form input[type="text"] {
+    height: 35px;
+    border-radius: 5px;
+    width: 75%;
+    text-align: left;
+    align-self: right;
+    font: inherit;
+}
+
 #show {
     height: calc(100% - 60px);
     display: flex;
     justify-content: flex-start;
+    font: 1em "Ubuntu", sans-serif;
 }
+
+.param{
+    width: calc(20% - 11px);
+    margin: 2px;
+    padding: 3px;
+    height: 35px;
+    background-color: #f49b01;
+    color: white;
+    border-radius: 5px;
+    display: inline grid;
+    grid-template-columns: calc(100% - 75px) 75px;
+    align-content: center;
+}
+.param input[type="text"] { 
+    height: 32px;
+    width: 65px;
+    border-radius: 5px;
+    text-align: right;
+    font-size: initial;
+}
+
+.param_label { align-self: center; font-size: 16px; }
+/* .param_input { float: right; } */
+
 #entries {
     display: inline table;
     width: calc(100% - 160px);
@@ -73,28 +119,3 @@
     border-color:lightblue;
     color: lightblue;
 }
-
-#control form p {
-    margin-left: 20px;
-    color: white;
-    font-size: 1.2em;
-}
-
-#control form input[type="text"] {
-    height: 35px;
-}
-.param{
-    width: calc(20% - 11px);
-    margin: 2px;
-    padding: 3px;
-    height: 35px;
-    background-color: #f49b01;
-    color: white;
-    border-radius: 5px;
-    display: inline grid;
-    grid-template-columns: calc(100% - 75px) 75px;
-}
-.param input[type="text"] { height: 32px; }
-
-.param_label { align-self: center; font-size: 16px; }
-/* .param_input { float: right; } */

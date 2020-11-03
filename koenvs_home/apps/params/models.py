@@ -354,7 +354,7 @@ class Parameter(models.Model):
         ret.append(("Type", "136", self.type_1b, colors["varia"]))
         ret.append(("Nom current (mA)", "137 & 138",
                     self.nominal_current_2b, colors["led"]))
-        ret.append(("Nom voltage (V) (1b)", "139",
+        ret.append(("Nom voltage (x100mV) (1b)", "139",
                     self.nominal_voltage_1b, colors["led"]))
         ret.append(("Therm res (°C/W)", "140",
                     self.thermal_resistance_1b, colors["varia"]))
@@ -440,7 +440,7 @@ class Parameter(models.Model):
                     self.vf_short_threshold_slow, colors["varia"]))
         ret.append(("Min on time (ns)", "208 & 209",
                     self.min_on_time_2b, colors["varia"]))
-        ret.append(("Nom voltage (V)", "210 & 211",
+        ret.append(("Nom voltage (x10mV)", "210 & 211",
                     self.nominal_voltage_2b, colors["led"]))
         ret.append(("Load type", "212", self.load_type_1b, colors["led"]))
         ret.append(("AK power 1 win (W)", "213",

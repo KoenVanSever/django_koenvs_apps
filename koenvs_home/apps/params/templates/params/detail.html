@@ -17,11 +17,11 @@
     <div id="control">
         <form method="post" id="form_control" action="{% url 'params:detail' param_id %}">
             {% csrf_token %}
-            <label>&nbsp;CSV name: <input type="text" id="csv_entry" size="30" name="csv_entry"
+            <label id="csv_label">&nbsp;CSV name: <input type="text" id="csv_entry" name="csv_entry"
                     value="{{ text_info.csv_name }}"></label>
-            <label>&nbsp;Short name: <input type="text" id="short_entry" size="25" name="short_entry"
+            <label id="short_label">&nbsp;Short name: <input type="text" id="short_entry" size="25" name="short_entry"
                     value="{{ text_info.short_name }}"></label>
-            <label>&nbsp;Category: <input type="text" id="cat_entry" size="1" name="cat_entry"
+            <label id="cat_label">&nbsp;Category: <input type="text" id="cat_entry" size="1" name="cat_entry"
                     value="{{ text_info.category }}"></label>
             <input type="text" hidden id="data" name="data" value="">
             <input id="export" type="text" hidden name="export" value="data">
