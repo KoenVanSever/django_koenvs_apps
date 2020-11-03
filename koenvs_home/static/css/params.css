@@ -27,15 +27,23 @@ th, td {
     text-align: center;
     line-height: 1em;
 }
+#foo {
+    width: 100%;
+    overflow: hidden;
+    height: 1em;
+    margin: 0;
+    word-break: break-all;
+}
 .detail_but { 
     background-color: lightgreen;
     color: white;
     border-color: gray;
-    height: 1.5em;
     border-radius: 5px;
+    width: 100%;
+    height: 100%;
 }
 .detail_but:hover { background-color: white; color: gray; border-color: gray;}
-.csv { width: 25%; overflow-x: hidden; }
+.csv { width: 25%; }
 .cat { width: 5%; }
 .led { width: 5%; }
 .dim { width: 5%; }

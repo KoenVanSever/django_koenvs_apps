@@ -42,6 +42,7 @@
     text-align: left;
     align-self: right;
     font: inherit;
+    border-color: gray;
 }
 
 #show {
@@ -64,11 +65,13 @@
     align-content: center;
 }
 .param input[type="text"] { 
-    height: 32px;
+    height: 30px;
     width: 65px;
     border-radius: 5px;
+    border-collapse: collapse;
     text-align: right;
     font-size: initial;
+    border-color: gray;
 }
 
 .param_label { align-self: center; font-size: 16px; }
