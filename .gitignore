@@ -6,3 +6,4 @@ django/
 **/.vscode
 koenvs/temporary/generated/
 geckodriver.log
+*/.vscode

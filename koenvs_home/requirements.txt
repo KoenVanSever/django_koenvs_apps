@@ -9,3 +9,4 @@ ipython
 notebook
 pylint-django
 selenium
+xlrd

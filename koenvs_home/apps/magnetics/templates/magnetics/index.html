@@ -2,8 +2,9 @@
 
 {% block head %}
 <title>KoenVS - Magnetics</title>
-{% endblock %}
-
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/magnetics.css' %}" {% endblock %}>
+<!-- ! CHARTS: https://www.highcharts.com/demo/line-ajax -->
 {% block header %}
 <div id="header_title_container">
     <h1>Magnetics</h1>
@@ -11,7 +12,19 @@
 {% endblock %}
 
 {% block main %}
+<div id="main_div">
+    <div id="left_side" class="boxed">
 
+    </div>
+    <div id="middle">
+        <div id="middle_top" class="boxed">
+
+        </div>
+        <div id="middle_bottom" class="boxed">
+
+        </div>
+    </div>
+</div>
 {% endblock%}
 
 {% block footer %}
