@@ -1,0 +1,36 @@
+#main_div {
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    justify-content: flex-start;
+    width: 95%;
+    height: 100%;
+}
+.boxed {
+    border-radius: 5px;
+    border-style: solid;
+    border-width: 3px;
+    border-color: #f49b01;
+    margin: 3px;
+    padding: 5px;
+}
+#left_side {
+    width: calc(20% - 16px);
+    height: calc(100% - 22px);
+
+}
+
+#middle {
+    width: 80%;
+    height: 100%;
+}
+
+#middle_top {
+    width: calc(100% - 16px);
+    height: calc(20% - 22px);
+}
+
+#middle_bottom {
+    width: calc(100% - 16px);
+    height: calc(80% - 22px);
+}
