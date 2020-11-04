@@ -37,7 +37,7 @@ _, ports_list = gen_ports_list()
 # TODO: clean this up
 temp = str(ports_list[0].split("-")[0]
            ).rstrip() if len(ports_list) >= 1 else None
-ser = Sfs(port=temp)  # /i MAIN SER OBJECT
+ser = Sfs(port=temp, timeout=0.5)  # /i MAIN SER OBJECT
 ser.close()  # /i close port by default when starting application
 start_port = ""
 if sys.platform == "linux":
@@ -64,15 +64,18 @@ def on_ser_closed(request, comm_proc, sel_port):
         ser.port = sel_port
         try:
             ser.open()
+            ser.reset_input_buffer()
+            ser.reset_output_buffer()
         except Exception:  # pylint: disable=broad-except
             terminal_text.append("Selected port invalid")
             return render_ser_index(request)
-        read = ser.open_admin()
-        if "(3)" in read:
-            prefix = read.split("\n")[1]
-            terminal_text.append("Terminal opened on correct level!")
         else:
-            terminal_text.append("Something went wrong!")
+            read = ser.open_admin()
+            if "(3)" in read:
+                prefix = read.split("\n")[1]
+                terminal_text.append("Terminal opened on correct level!")
+            else:
+                terminal_text.append("Something went wrong!")
     elif comm_proc == "exit":
         terminal_text.append("Port is already closed")
     else:
@@ -85,20 +88,25 @@ def on_ser_open_open():
     global prefix
     ser.write_command("open")
     sleep(0.05)
-    ret = ser.read_inWaiting()
-    if "(3)" in ret:
+    try:
+        ret = ser.read_inWaiting()
+    except UnicodeDecodeError:
         terminal_text.append(
-            "Terminal opened on correct level!")
+            "UnicodeDecodeError: meaning invalid UTF8/ASCII char, please check connections and try again")
     else:
-        i = 0
-        while i < 2:
-            ret = ser.open_admin()
-            if "(3)" in ret:
-                prefix = ret.split("\n")[1]
-                terminal_text.append(
-                    "Terminal opened on correct level!")
-                break
-            i += 1
+        if "(3)" in ret:
+            terminal_text.append(
+                "Terminal opened on correct level!")
+        else:
+            i = 0
+            while i < 2:
+                ret = ser.open_admin()
+                if "(3)" in ret:
+                    prefix = ret.split("\n")[1]
+                    terminal_text.append(
+                        "Terminal opened on correct level!")
+                    break
+                i += 1
 
 
 def analyze_text_buffer(text_string, with_prefix=True):
@@ -109,8 +117,11 @@ def analyze_text_buffer(text_string, with_prefix=True):
     for e in buf:
         if e != "":
             filtered_buf.append(e)
-    terminal_text.append(pre + filtered_buf[0].rstrip())
-    if len(buf) > 1:
+    if filtered_buf == []:
+        terminal_text.append(pre + "")
+    elif len(filtered_buf) == 1:
+        terminal_text.append(pre + filtered_buf[0].rstrip())
+    elif len(filtered_buf) > 1:
         terminal_text = terminal_text + filtered_buf[1:len(filtered_buf)]
 
 
@@ -120,13 +131,7 @@ def append_term(command, dump_end=b"\r\n\r\n"):
     dump_ending = dump_end + prefix.encode("utf8")
     ret = ser.read_to_next_entry(command, dump_ending).rstrip(
         dump_ending.decode("utf8"))
-    buf = [x.rstrip() for x in ret.split("\n")]
-    filtered_buf = []
-    for e in buf:
-        if e != "":
-            filtered_buf.append(e)
-    terminal_text.append(prefix + filtered_buf[0].rstrip())
-    terminal_text = terminal_text + filtered_buf[1:len(filtered_buf)]
+    analyze_text_buffer(ret)
     return None
 
 
