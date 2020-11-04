@@ -264,7 +264,7 @@ def serialIndex(request):
                         elif entry_data["conv"] == "HPC":
                             terminal_text.append("Not implemented yet for HPC")
                         else:
-                            terminal_text.append("Unknown converter type?")
+                            terminal_text.append("Unknown converter type")
                 elif comm_proc == "getledcalib":
                     sending = f"getledcalib {entry_data['arg1']}"
                     append_term(sending)
