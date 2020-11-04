@@ -224,38 +224,47 @@ def serialIndex(request):
                     if not (str(entry_data["arg1"]) in ("1", "4")):
                         terminal_text.append("Please set arg1 to 1 or 4")
                     else:
-                        if entry_data["ledcalib_state"][0] == "off":
-                            sending = f"ledcalib {entry_data['arg1']}"
-                            ser.write_command(sending)
-                            sleep(0.1)
-                            feedback = ser.read(ser.inWaiting()).decode("utf8")
-                            if "Press any key to continue" in feedback:
-                                analyze_text_buffer(
-                                    feedback.rstrip(dump_end.decode("utf8")))
-                                # press anything to supply current to LEDs
-                                ser.write_command("x", no_newline=True)
-                                entry_data["ledcalib_state"] = ["low", 0]
+                        if entry_data["conv"] == "FO/LCC":
+                            if entry_data["ledcalib_state"][0] == "off":
+                                sending = f"ledcalib {entry_data['arg1']}"
+                                ser.write_command(sending)
+                                sleep(0.1)
+                                feedback = ser.read(
+                                    ser.inWaiting()).decode("utf8")
+                                if "Press any key to continue" in feedback:
+                                    analyze_text_buffer(
+                                        feedback.rstrip(dump_end.decode("utf8")))
+                                    # press anything to supply current to LEDs
+                                    ser.write_command("x", no_newline=True)
+                                    entry_data["ledcalib_state"] = ["low", 0]
+                                    feedback = ser.read_until(
+                                        b"Value: ").decode("utf8")
+                                    analyze_text_buffer(
+                                        feedback, with_prefix=False)
+                                else:
+                                    analyze_text_buffer(feedback)
+                            elif entry_data["ledcalib_state"][0] == "low":
+                                sending = str(entry_data["ledcalib_state"][1])
+                                ser.write_command(
+                                    sending, return_instead_of_newline=True)
+                                entry_data["ledcalib_state"] = ["high", 0]
                                 feedback = ser.read_until(
                                     b"Value: ").decode("utf8")
                                 analyze_text_buffer(
                                     feedback, with_prefix=False)
-                            else:
-                                analyze_text_buffer(feedback)
-                        elif entry_data["ledcalib_state"][0] == "low":
-                            sending = str(entry_data["ledcalib_state"][1])
-                            ser.write_command(
-                                sending, return_instead_of_newline=True)
-                            entry_data["ledcalib_state"] = ["high", 0]
-                            feedback = ser.read_until(
-                                b"Value: ").decode("utf8")
-                            analyze_text_buffer(feedback, with_prefix=False)
-                        elif entry_data["ledcalib_state"][0] == "high":
-                            sending = str(entry_data["ledcalib_state"][1])
-                            ser.write_command(
-                                sending, return_instead_of_newline=True)
-                            entry_data["ledcalib_state"] = ["off", 0]
-                            feedback = ser.read_until(dump_end).decode("utf8")
-                            analyze_text_buffer(feedback, with_prefix=False)
+                            elif entry_data["ledcalib_state"][0] == "high":
+                                sending = str(entry_data["ledcalib_state"][1])
+                                ser.write_command(
+                                    sending, return_instead_of_newline=True)
+                                entry_data["ledcalib_state"] = ["off", 0]
+                                feedback = ser.read_until(
+                                    dump_end).decode("utf8")
+                                analyze_text_buffer(
+                                    feedback, with_prefix=False)
+                        elif entry_data["conv"] == "HPC":
+                            terminal_text.append("Not implemented yet for HPC")
+                        else:
+                            terminal_text.append("Unknown converter type?")
                 elif comm_proc == "getledcalib":
                     sending = f"getledcalib {entry_data['arg1']}"
                     append_term(sending)
