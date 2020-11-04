@@ -14,21 +14,32 @@
 
 {% block main %}
 <div class="main_div">
-    <p>This is a homepage made by Koen Van Sever in respects to ADB Safegate Products. Several applications on this homepage are designed to help with ADB Safegate
-        product debugging or plotting data in some sort of way. In the top right corner of this page you can cycle through different applications.<br>
+    <p>This is a homepage made by Koen Van Sever in respects to ADB Safegate Products. Several applications on this
+        homepage are designed to help with ADB Safegate
+        product debugging or plotting data in some sort of way. In the top right corner of this page you can cycle
+        through different applications.<br>
         Please find some information here:<br>
-        <ul>
-            <li>
-                Serial: This application is used to debug HPC / FO / LCC with serial communication. It has builtin, easy to access buttons to call on commands.
-                It does not loose functionatity / restricts you, since every command can be given in manually as well.
-            </li>
-            <li>
-                Dimming curve: ...
-            </li>
-            <li>
-                Magnetics: ...
-            </li>
-        </ul>
+    <ul>
+        <li>
+            Serial: This application is used to debug HPC / FO / LCC with serial communication. It has builtin, easy to
+            access buttons to call on commands.
+            It does not loose functionatity / restricts you, since every command can be given in manually as well.
+        </li>
+        <li>
+            Dimming curve: files where input current and output light power is provided in csv format with columns
+            "input" and "output" will be visualized in graphical form.
+            You will be able to cycle easily between the different uploaded files and limit lines, easy upload of files
+            with build in functionatity on page.
+        </li>
+        <li>
+            Magnetics: consists of graph plotting data from magnetics suppliers for different cores. Small tool for
+            calculation could be added in the future.
+        </li>
+        <li>
+            Params: maintains an SQLite3 relational DB with all parameters included. A detailed view where parameter
+            file manipulation/export/... is possible.
+        </li>
+    </ul>
     </p>
 </div>
 {% endblock %}
