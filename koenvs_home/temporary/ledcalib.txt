@@ -1,0 +1,27 @@
+FO4/LCC:
+
+Bad start:
+b'ledcalib 4\r\n\r\n\r\nLED current calibration\r\n-----------------------\r\n\r\n
+Voltage reference trim value must first be calibrated.\r\nSet CCR current to 4A-5A or DC+ to 40V if powered directly at DC+.
+\r\nNOTE you need to connect a AMP meter to measure LED current to be able to perform the calibration process!\r\nCCR current not within limits!
+\r\n\r\nLLC1-Con(3):> '
+
+Good start:
+b'ledcalib 4\r\n\r\n\r\nLED current calibration\r\n-----------------------\r\n\r\n
+Voltage reference trim value must first be calibrated.\r\nSet CCR current to 4A-5A or DC+ to 40V if powered directly at DC+.
+\r\nNOTE you need to connect a AMP meter to measure LED current to be able to perform the calibration process!
+\r\n\r\nPress any key to continue (ESC aborts)...\r\n'
+
+b'Starting LED backend calibration process for LED with ident 4\r\n
+Setting LED calibration current to default P1 current (205mA)\r\n
+Ready to calibrate, please enter the LED current from your AMP meter (in mA)\r\n
+Value: '
+
+b'217\r\nYou entered "217 mA"\r\nSetting LED calibration current to default P2 current (750mA)\r\n
+Ready to calibrate, please enter the LED current from your AMP meter (in mA)\r\n
+Value: '
+
+b'727\r\nYou entered "727 mA"\r\nCalibrating backend with 217 mA at P1 AND 727 mA at P2\r\n\r\n
+Led calibration done\r\n
+ADCReference: 925, ration 79\r\n\r\n
+LLC1-Con(3):> '
