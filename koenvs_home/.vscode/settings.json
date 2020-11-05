@@ -3,7 +3,8 @@
         "--load-plugins=pylint_django",
         "--disable=fixme",
         "--disable=missing-function-docstring",
-        "--disable=global-statement"
+        "--disable=global-statement",
+        "--disbale=unused-import",
     ],
     "python.pythonPath": "C:\\Users\\kvansever\\Documents\\ADB\\Coding_projects\\django\\django\\Scripts\\python.exe",
 }
