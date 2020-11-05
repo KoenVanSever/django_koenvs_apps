@@ -24,20 +24,25 @@
             Serial: This application is used to debug HPC / FO / LCC with serial communication. It has builtin, easy to
             access buttons to call on commands.
             It does not loose functionatity / restricts you, since every command can be given in manually as well.
+            This application needs to be localhost and won't work on server side since serial port needs to be connected
+            on server side.
         </li>
         <li>
             Dimming curve: files where input current and output light power is provided in csv format with columns
             "input" and "output" will be visualized in graphical form.
             You will be able to cycle easily between the different uploaded files and limit lines, easy upload of files
             with build in functionatity on page.
+            Application can be run from server.
         </li>
         <li>
             Magnetics: consists of graph plotting data from magnetics suppliers for different cores. Small tool for
             calculation could be added in the future.
+            Application can be run from server.
         </li>
         <li>
             Params: maintains an SQLite3 relational DB with all parameters included. A detailed view where parameter
             file manipulation/export/... is possible.
+            Application can be run from server.
         </li>
     </ul>
     </p>

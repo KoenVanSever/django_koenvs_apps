@@ -22,12 +22,12 @@ def get_init_pid():
 
 
 def gen_ports_list():
-    ports_list = stl.comports()
+    ser_ports_list = stl.comports()
     ser_ports = []
-    for i in range(len(ports_list)):
+    for i in range(len(ser_ports_list)):
         ser_ports.append(
-            f"{ports_list[i].device}  -  {ports_list[i].description}")
-    return ports_list, ser_ports
+            f"{ser_ports_list[i].device}  -  {ser_ports_list[i].description}")
+    return ser_ports_list, ser_ports
 
 
 # * DATA OBJECTS FOR START

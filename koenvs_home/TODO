@@ -1,0 +1,12 @@
+- [] General: Try to use AJAX for applications (less traffic, mainly applicable when migrating to server)
+- [] General: Optimize CSS for different system views (Linux vs Windows vs different monitor sizes)
+- [] Magnetics: provide viewer for core properties
+- [] Magnetics: provide calculator for core
+- [] Serial: implement "calibccroffs" for FO/LCC
+- [] Serial: implement ASP commands ("rx", "recvtest", ...) correctly for HPC
+- [] Serial: ASP commands -> generate page with information and graphs from feedback
+- [] Serial: add LED calibration actions for HPC
+- [] Serial: optimize button commands (add calibccroffs/readcputemp/...)
+- [] Params: add delete option in detail view
+- [] Dimming: implement zoom options
+- [] Dimming: INVESTIGATE: interactive matplotlib possible in webbrowser?
