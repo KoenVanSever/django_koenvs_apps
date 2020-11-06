@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.views import generic
 from django.views.decorators.http import require_http_methods
 from django.core.files.storage import FileSystemStorage
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.conf import settings
 from .forms import UploadFileForm
 from json import dumps, dump, loads
@@ -133,6 +133,11 @@ def dimmingIndex(request):
 # ! ------------------------------
 # ! UNDER DEVELOPMENT / TESTING --
 # ! ------------------------------
+
+
+def ajax_view(request):
+    print(request)
+    return JsonResponse({"x": "blabla"})
 
 
 def setPlt():

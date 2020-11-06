@@ -7,3 +7,4 @@ django/
 koenvs/temporary/generated/
 geckodriver.log
 */.vscode
+*/node_modules
