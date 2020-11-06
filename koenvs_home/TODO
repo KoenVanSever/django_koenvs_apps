@@ -7,6 +7,7 @@
 - [] Serial: ASP commands -> generate page with information and graphs from feedback
 - [] Serial: add LED calibration actions for HPC
 - [] Serial: optimize button commands (add calibccroffs/readcputemp/...)
+- [] Serial: Now running serial port on server/host machine, with nodeJS library serial port you might be able to run on client side
 - [] Params: add delete option in detail view
 - [] Dimming: implement zoom options
 - [] Dimming: INVESTIGATE: interactive matplotlib possible in webbrowser?
