@@ -4,7 +4,9 @@ djangoenv/
 *.pyc
 django/
 **/.vscode
-koenvs/temporary/generated/
+koenvs/temporary/generated/*
+koenvs/static/media/temporary/*
+koenvs/temporary/*
 geckodriver.log
 */.vscode
 */node_modules
