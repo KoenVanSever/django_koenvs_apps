@@ -10,3 +10,5 @@ koenvs_home/temporary/*
 geckodriver.log
 */.vscode
 */node_modules
+*/sqlite*
+*/*.svg
