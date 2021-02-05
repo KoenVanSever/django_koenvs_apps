@@ -254,7 +254,7 @@ class Parameter(models.Model):
         output = [str(e) for e in self._get_full_file()]
         full_path = Path(target_dir, self.csv_name).resolve()
         with open(full_path, "w") as f:
-            f.write(",".join(output))
+            f.write(";".join(output))  # - SEMICOLON!!!!
             f.write("\n")
         return full_path
 

@@ -4,14 +4,15 @@
 <title>KoenVS - Dimming</title>
 {% load static %}
 <link rel="stylesheet" type="text/css" href="{% static 'css/dimming.css' %}">
-<script type="text/javascript" defer>
+<script type="module" src="{% static 'js/js.cookie.min.js' %}"></script>
+<script type="module" src="{% static 'js/jquery.min.js' %}"></script>
+<script type="text/javascript">
     let selected = JSON.parse("{{ selected | escapejs }}");
     function updateComm() {
         let update = document.getElementById("update_form");
         update.submit();
     }
 </script>
-<script type="text/javascript" src="{% static 'js/dimming.js' %}" defer></script>
 {% endblock %}
 
 {% block header %}
@@ -39,6 +40,7 @@
                     <input type="submit" class="sub_button" name="file_other" value="clear available files">
                 </form>
                 <button class="sub_button" onclick="updateComm();">update graph</button>
+                <!-- <button id="test">Test</button> -->
             </div>
         </div>
 
@@ -71,8 +73,16 @@
         <img id="dimm_image" src="{% static 'media/temporary/temp.svg' %}" type="image/svg">
     </div>
 </div>
+
 {% endblock%}
 
 {% block footer %}
 
 {% endblock%}
+
+{% block scriptend %}
+<script type="text/javascript" src="{% static 'js/dimming.js' %}" defer></script>
+<script type="text/javascript">
+
+</script>
+{% endblock %}
